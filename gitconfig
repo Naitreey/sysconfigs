@@ -1,0 +1,19 @@
+[user]
+	email = zhuyide@antiy.cn
+	name = 朱毅德
+[core]
+	editor = gvim -f
+	excludesfile = ~/.gitignore
+[merge]
+	tool = gvimdiff
+[rerere]
+	enabled = true
+[color "grep"]
+	match = red bold
+	filename = magenta
+	linenumber = green
+	separator = cyan
+[credential]
+[credential]
+	helper = gnome-keyring
+[alias]

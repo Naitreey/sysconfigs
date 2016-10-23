@@ -1,0 +1,4 @@
+style "gvim-border" {
+    bg[NORMAL] = "#002b36" # this matches my gvim theme 'Normal' bg color.
+}
+widget "vim-main-window.*GtkForm" style "gvim-border"
