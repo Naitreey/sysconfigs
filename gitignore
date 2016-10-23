@@ -1,0 +1,7 @@
+# vim backups, undos etc.
+*~
+.*~
+.*sw[po]
+
+# cscope files
+/.cscope

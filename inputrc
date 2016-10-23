@@ -1,0 +1,26 @@
+$include /etc/inputrc
+$if mode=emacs
+"\C-x\'": "\'\'\C-b"
+"\C-x`": "``\C-b"
+"\C-x\"": "\"\"\C-b"
+"\C-x{": "{}\C-b"
+"\C-x[": "[]\C-b"
+"\C-x(": "()\C-b"
+"\C-x0": vi-eWord
+"\eF": "\C-x0\C-f"
+"\eB": vi-bWord
+"\C-x1": kill-region
+"\C-x2": set-mark
+"\eD": "\C-x2\eF\C-x1"
+# cycle through possible completions
+TAB: menu-complete
+# complete until the end of common prefix before cycling through possible completions
+set menu-complete-display-prefix on
+# show possible completions if more than one completions are possible
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+# do not duplicate characters after the cursor if they consist partially of possbile completion
+set skip-completed-text on
+# display colors when doing completion as `ls` does
+set colored-stats on
+$endif
