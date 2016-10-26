@@ -15,4 +15,6 @@ imap <A-f> forwardWord
 imap <C-h> deleteChar
 imap <C-d> deleteForwardChar
 imap <C-i> editWithVim
-map m addQuickMark
+unmap m
+unmap ;
+map m setMark
