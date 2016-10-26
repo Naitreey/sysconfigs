@@ -1,11 +1,11 @@
 let configpath="/home/naitree/.cvimrc"
 set linkanimations
+set nativelinkorder
 set cncpcompletion
 let homedirectory="/home/naitree"
 let barposition="bottom"
-set nativelinkorder
-map <C-f> scrollPageDown
-map <C-b> scrollPageUp
+map <C-f> scrollFullPageDown
+map <C-b> scrollFullPageUp
 map u lastClosedTab
 imap <C-a> beginningOfLine
 imap <C-w> deleteWord
@@ -15,3 +15,4 @@ imap <A-f> forwardWord
 imap <C-h> deleteChar
 imap <C-d> deleteForwardChar
 imap <C-i> editWithVim
+map m addQuickMark
