@@ -5,3 +5,6 @@
 
 # cscope files
 /.cscope
+
+# project-specific vimrc file
+/.vimrc
