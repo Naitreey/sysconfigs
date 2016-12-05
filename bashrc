@@ -213,6 +213,39 @@ ng8w-ssh() {
     ssh -p "$ssh_port" "$user"@"$ip"
 }
 
+ng8w-scp() {
+    declare need_knock
+    declare knock_port=10001
+    declare knock_str='eJzLSM3JyQcABiwCFQ=='
+    declare ssh_port
+    declare ip
+
+    if [ "$1" == '-k' ]; then
+        need_knock=true
+        ssh_port=22999
+        shift
+    else
+        need_knock=false
+        ssh_port=22
+    fi
+
+    declare -a ips
+    declare saved_params="$@"
+    while (($# > 0)); do
+        [[ $1 =~ ^.*@(([0-9]{1,3}\.){3}[0-9]{1,3}):.*$ ]] && ips+=(${BASH_REMATCH[1]})
+        shift
+    done
+
+    $need_knock && {
+        for ip in "${ips[@]}"; do
+            base64 -d <<<"$knock_str" >/dev/udp/"$ip"/$"$knock_port"
+            sleep 0.2
+        done
+    }
+
+    scp -P $ssh_port $saved_params
+}
+
 cd() {
     if [ $# -eq 0 ]; then
         builtin cd
