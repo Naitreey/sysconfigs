@@ -286,39 +286,4 @@ special-routes() {
     sudo ip route replace 192.168.16.0/24 via 192.168.18.2 dev eno1 proto static metric 0
 }
 
-launch-win7() {
-    declare vm=/home/naitree/vm/win7/win7.qcow2
-    declare spice_sock=/tmp/win7-spice.socket
-    declare shareddir=/home/naitree/Downloads
-
-    # explanation:
-    # VM name
-    # detach from stdio
-    # fully utilize host CPU with KVM kernel module
-    # win7 disk image, use paravirtualized virtio
-    # DHCP hostname: win7, launch SMB server on host
-    # memory 1G
-    # sound card
-    # moving the cursor of guest on hovering
-    # VGA type: QEMU QXL video accelerator, a paravirtualized framebuffer device for SPICE
-    # SPICE, using unix domain socket, disable authentication and audio compression
-    # next three lines: spice-vdagent configs, to enable copy&paste between host-guest
-    qemu-kvm -name Win7 \
-    -daemonize \
-    -cpu host -enable-kvm \
-    -drive file=$vm,if=virtio \
-    -net nic -net user,hostname=win7,smb=$shareddir \
-    -m 1G \
-    -soundhw hda \
-    -usbdevice tablet \
-    -vga qxl \
-    -spice unix,addr=$spice_sock,disable-ticketing,playback-compression=off \
-    -device virtio-serial-pci \
-    -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 \
-    -chardev spicevmc,id=spicechannel0,name=vdagent \
-    "$@"
-
-    remote-viewer spice+unix://$spice_sock &
-}
-
 # vim:ft=sh
