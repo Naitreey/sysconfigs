@@ -145,7 +145,8 @@ shopt -s dirspell
 stty -ixon
 
 
-alias gccd='gcc -std=c11 -ggdb3 -pedantic -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes'
+# do not include `-pedantic`, it warns casting from (void*) to function pointer
+alias gccd='gcc -std=c11 -ggdb3 -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes'
 # no emacs keys
 alias info='info --vi-keys'
 # rm interactively, for safety
