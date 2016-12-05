@@ -5,6 +5,9 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
+# my bin
+[[ ":${PATH}:" == *:$HOME/bin:* ]] || PATH="$HOME/bin${PATH:+:$PATH}"
+
 # Uncomment the following line if you don't like systemctl's auto-paging feature:
 # export SYSTEMD_PAGER=
 
@@ -142,42 +145,43 @@ shopt -s dirspell
 stty -ixon
 
 
-alias gccd='gcc -std=c11 -ggdb3 -pedantic -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes'
+# do not include `-pedantic`, it warns casting from (void*) to function pointer
+alias gccd='gcc -std=c11 -ggdb3 -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes'
 # no emacs keys
 alias info='info --vi-keys'
 # rm interactively, for safety
 alias rm='rm -i'
 
-pointerspeed() {
-    declare speed="${1:-}"
-    declare mouse_id=$(xinput --list | sed -r -n -e '/Mouse.*pointer/{s/^.*id=([0-9]+).*$/\1/i;p}')
-    if [ -z "$speed" ]; then
-        xinput --set-prop "$mouse_id" 'libinput Accel Speed' "-0.9"
-        return $?
-    else
-        xinput --set-prop "$mouse_id" 'libinput Accel Speed' "$speed"
-        return $?
-    fi
-}
+#pointerspeed() {
+#    declare speed="${1:-}"
+#    declare mouse_id=$(xinput --list | sed -r -n -e '/Mouse.*pointer/{s/^.*id=([0-9]+).*$/\1/i;p}')
+#    if [ -z "$speed" ]; then
+#        xinput --set-prop "$mouse_id" 'libinput Accel Speed' "-0.9"
+#        return $?
+#    else
+#        xinput --set-prop "$mouse_id" 'libinput Accel Speed' "$speed"
+#        return $?
+#    fi
+#}
 
-touchpad() {
-    declare action="${1:-enable}"
-    declare touchpad_id=$(xinput --list | sed -r -n -e '/GlidePoint|TouchPad/{s/^.*id=([0-9]+).*$/\1/i;p}')
-    if [ "$action" == "enable" ]; then
-        xinput --set-prop "$touchpad_id" 'Device Enabled' 1
-        # set touchpad able to tap as left click
-        xinput --set-prop "$touchpad_id" 'libinput Tapping Enabled' 1
-        return $?
-    elif [ "$action" == "disable" ]; then
-        xinput --set-prop "$touchpad_id" 'Device Enabled' 0
-        return $?
-    else
-        echo "invalid action"
-        return 1
-    fi
-}
+#touchpad() {
+#    declare action="${1:-enable}"
+#    declare touchpad_id=$(xinput --list | sed -r -n -e '/GlidePoint|TouchPad/{s/^.*id=([0-9]+).*$/\1/i;p}')
+#    if [ "$action" == "enable" ]; then
+#        xinput --set-prop "$touchpad_id" 'Device Enabled' 1
+#        # set touchpad able to tap as left click
+#        xinput --set-prop "$touchpad_id" 'libinput Tapping Enabled' 1
+#        return $?
+#    elif [ "$action" == "disable" ]; then
+#        xinput --set-prop "$touchpad_id" 'Device Enabled' 0
+#        return $?
+#    else
+#        echo "invalid action"
+#        return 1
+#    fi
+#}
 
-complete -W 'enable disable' touchpad
+#complete -W 'enable disable' touchpad
 
 ng8w-ssh() {
     declare need_knock
@@ -207,6 +211,39 @@ ng8w-ssh() {
         sleep 0.1
     fi
     ssh -p "$ssh_port" "$user"@"$ip"
+}
+
+ng8w-scp() {
+    declare need_knock
+    declare knock_port=10001
+    declare knock_str='eJzLSM3JyQcABiwCFQ=='
+    declare ssh_port
+    declare ip
+
+    if [ "$1" == '-k' ]; then
+        need_knock=true
+        ssh_port=22999
+        shift
+    else
+        need_knock=false
+        ssh_port=22
+    fi
+
+    declare -a ips
+    declare saved_params="$@"
+    while (($# > 0)); do
+        [[ $1 =~ ^.*@(([0-9]{1,3}\.){3}[0-9]{1,3}):.*$ ]] && ips+=(${BASH_REMATCH[1]})
+        shift
+    done
+
+    $need_knock && {
+        for ip in "${ips[@]}"; do
+            base64 -d <<<"$knock_str" >/dev/udp/"$ip"/$"$knock_port"
+            sleep 0.2
+        done
+    }
+
+    scp -P $ssh_port $saved_params
 }
 
 cd() {
@@ -244,43 +281,9 @@ GOALS=~/Dropbox/goals
 
 special-routes() {
     sudo ip route replace 10.0.0.111/32 via 192.168.18.2 dev eno1 proto static metric 0
+    sudo ip route replace 10.255.52.111/32 via 192.168.18.2 dev eno1 proto static metric 0
     sudo ip route replace 10.255.52.112/32 via 192.168.18.2 dev eno1 proto static metric 0
     sudo ip route replace 192.168.16.0/24 via 192.168.18.2 dev eno1 proto static metric 0
-}
-
-launch-win7() {
-    declare vm=/home/naitree/vm/win7/win7.qcow2
-    declare spice_sock=/tmp/win7-spice.socket
-    declare shareddir=/home/naitree/Downloads
-
-    # explanation:
-    # VM name
-    # detach from stdio
-    # fully utilize host CPU with KVM kernel module
-    # win7 disk image, use paravirtualized virtio
-    # DHCP hostname: win7, launch SMB server on host
-    # memory 1G
-    # sound card
-    # moving the cursor of guest on hovering
-    # VGA type: QEMU QXL video accelerator, a paravirtualized framebuffer device for SPICE
-    # SPICE, using unix domain socket, disable authentication and audio compression
-    # next three lines: spice-vdagent configs, to enable copy&paste between host-guest
-    qemu-kvm -name Win7 \
-    -daemonize \
-    -cpu host -enable-kvm \
-    -drive file=$vm,if=virtio \
-    -net nic -net user,hostname=win7,smb=$shareddir \
-    -m 1G \
-    -soundhw hda \
-    -usbdevice tablet \
-    -vga qxl \
-    -spice unix,addr=$spice_sock,disable-ticketing,playback-compression=off \
-    -device virtio-serial-pci \
-    -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 \
-    -chardev spicevmc,id=spicechannel0,name=vdagent \
-    "$@"
-
-    remote-viewer spice+unix://$spice_sock &
 }
 
 # vim:ft=sh
