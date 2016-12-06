@@ -152,37 +152,6 @@ alias info='info --vi-keys'
 # rm interactively, for safety
 alias rm='rm -i'
 
-#pointerspeed() {
-#    declare speed="${1:-}"
-#    declare mouse_id=$(xinput --list | sed -r -n -e '/Mouse.*pointer/{s/^.*id=([0-9]+).*$/\1/i;p}')
-#    if [ -z "$speed" ]; then
-#        xinput --set-prop "$mouse_id" 'libinput Accel Speed' "-0.9"
-#        return $?
-#    else
-#        xinput --set-prop "$mouse_id" 'libinput Accel Speed' "$speed"
-#        return $?
-#    fi
-#}
-
-#touchpad() {
-#    declare action="${1:-enable}"
-#    declare touchpad_id=$(xinput --list | sed -r -n -e '/GlidePoint|TouchPad/{s/^.*id=([0-9]+).*$/\1/i;p}')
-#    if [ "$action" == "enable" ]; then
-#        xinput --set-prop "$touchpad_id" 'Device Enabled' 1
-#        # set touchpad able to tap as left click
-#        xinput --set-prop "$touchpad_id" 'libinput Tapping Enabled' 1
-#        return $?
-#    elif [ "$action" == "disable" ]; then
-#        xinput --set-prop "$touchpad_id" 'Device Enabled' 0
-#        return $?
-#    else
-#        echo "invalid action"
-#        return 1
-#    fi
-#}
-
-#complete -W 'enable disable' touchpad
-
 ng8w-ssh() {
     declare need_knock
     declare ssh_port
