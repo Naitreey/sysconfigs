@@ -1,0 +1,5 @@
+@define-color solarized_dark #002b36;
+
+window#vim-main-window {
+    background-color: @solarized_dark;
+}
