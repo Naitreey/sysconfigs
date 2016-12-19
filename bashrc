@@ -257,4 +257,8 @@ special-routes() {
     sudo ip route replace 192.168.16.0/24 via 192.168.18.2 dev eno1 proto static metric 0
 }
 
+backup-home() {
+    sudo rsync -avu --delete --exclude='.cache' --exclude='vm/*.qcow2' --exclude='Downloads' --exclude='Desktop/try' --exclude='.mozilla' /home/naitree/ naitree@workstation
+}
+
 # vim:ft=sh
