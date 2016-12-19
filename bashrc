@@ -250,6 +250,7 @@ GOALS=~/Dropbox/goals
 
 special-routes() {
     sudo ip route replace 10.0.0.111/32 via 192.168.18.2 dev eno1 proto static metric 0
+    sudo ip route replace 10.255.0.10/32 via 192.168.18.2 dev eno1 proto static metric 0
     sudo ip route replace 10.255.52.111/32 via 192.168.18.2 dev eno1 proto static metric 0
     sudo ip route replace 10.255.52.112/32 via 192.168.18.2 dev eno1 proto static metric 0
     sudo ip route replace 10.255.49.65/32 via 192.168.18.2 dev eno1 proto static metric 0
