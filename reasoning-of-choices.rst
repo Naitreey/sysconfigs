@@ -148,3 +148,15 @@ Password Management
   * linux 客户端 too lousy to use. 可以当作不存在.
 
   * 浏览器插件可以单独使用.
+
+- Enpass
+
+  * linux 客户端是这几种中做得最好的.
+
+  * 桌面版免费, 移动版按照设备收费.
+
+- 结论
+
+  * 暂时尝试使用 Enpass. 若没问题, 则付费持续使用.
+
+  * 若 1Password 出 linux 版, 则切过去.
