@@ -146,7 +146,7 @@ stty -ixon
 
 
 # do not include `-pedantic`, it warns casting from (void*) to function pointer
-alias gccd='gcc -std=c11 -ggdb3 -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes'
+CDBFLAGS='-ggdb3 -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes'
 # no emacs keys
 alias info='info --vi-keys'
 # rm interactively, for safety
@@ -250,10 +250,15 @@ GOALS=~/Dropbox/goals
 
 special-routes() {
     sudo ip route replace 10.0.0.111/32 via 192.168.18.2 dev eno1 proto static metric 0
+    sudo ip route replace 10.255.0.10/32 via 192.168.18.2 dev eno1 proto static metric 0
     sudo ip route replace 10.255.52.111/32 via 192.168.18.2 dev eno1 proto static metric 0
     sudo ip route replace 10.255.52.112/32 via 192.168.18.2 dev eno1 proto static metric 0
     sudo ip route replace 10.255.49.65/32 via 192.168.18.2 dev eno1 proto static metric 0
     sudo ip route replace 192.168.16.0/24 via 192.168.18.2 dev eno1 proto static metric 0
+}
+
+backup-home() {
+    sudo rsync -avu --delete --exclude='.cache' --exclude='vm/*.qcow2' --exclude='Downloads' --exclude='Desktop/try' --exclude='.mozilla' /home/naitree/ naitree@workstation
 }
 
 # vim:ft=sh

@@ -61,3 +61,5 @@ Bray has written many software applications, including Bonnie which was the insp
 - Evgeniy Gabrilovich --- a senior staff research scientist at Google, specializing in Information Retrieval, Machine Learning, and Computational Linguistics, and a Senior Member of the Institute of Electrical and Electronics Engineers (IEEE),[1] and an ACM Distinguished Scientist.
 - Jean-loup Gailly --- an author of gzip. He wrote the compression code of the portable archiver of the Info-ZIP and the tools compatible with the PKZIP archiver for MS-DOS. He worked over zlib in collaboration with Mark Adler.
 - Howard Gobioff --- one of the architects of the Google File System
+- Spencer Kimball --- creating GNU Image Manipulation Program (GIMP) while still in college, and assisting the source code development of CockroachDB
+- Peter Mattis --- launching GNU Image Manipulation Program (GIMP) while still in college, and assisting the source code development of CockroachDB
