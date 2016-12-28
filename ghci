@@ -1,1 +1,1 @@
-:set prompt "\ESC[32;1m\STX%s > \ESC[m\STX"
+:set prompt "\ESC[34;1m\STX%s > \ESC[m\STX"
