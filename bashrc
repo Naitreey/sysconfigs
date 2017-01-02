@@ -146,7 +146,8 @@ stty -ixon
 
 
 # do not include `-pedantic`, it warns casting from (void*) to function pointer
-CDBFLAGS='-ggdb3 -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes'
+# export this variable to environ, so as to be used in makefile
+declare -x CDBFLAGS='-ggdb3 -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes'
 # no emacs keys
 alias info='info --vi-keys'
 # rm interactively, for safety
