@@ -1,5 +1,5 @@
 物理学还是计算机
-----------------
+================
 Considering your family, getting rid of them completely, do you have any
 other choice?
 
@@ -8,7 +8,7 @@ other choice?
   在此之前, 专心攻克更多的计算机科学知识尤其是算法知识, 积累更多设计能力, 挣更多的钱.
 
 周末在屋里看书还是去公司看书?
------------------------------
+=============================
 - 在屋里看书
 
   :pros: 安静, 不受闲杂人等打扰, 自在, 便于深入思考.
@@ -27,7 +27,7 @@ other choice?
 - 结论: 在换公司之前, 在屋里看书, 逐渐做到不受卫希存在的影响. 尽快学习, 换公司.
 
 Git large file versioning solution
-----------------------------------
+==================================
 - git annex + bup
 
   :pros:
@@ -96,7 +96,7 @@ Git large file versioning solution
 
 
 使用何种方式来记录笔记
-----------------------
+======================
 - Webpage
 
   * toolchain:
@@ -124,20 +124,36 @@ Git large file versioning solution
 webpage 是面向显示器的, 具有适应性; pdf 是面向纸张和印刷的, 具有精确性.
 
 个人电脑的选择
---------------
+==============
 - 不选择带有 Broadcom wireless network card 的机器. 它的 Linux 驱动不太好.
 
 
 数据库及存储的选择
+==================
+
+PostgreSQL (RDBMS)
 ------------------
-- PostgreSQL (RDBMS)
 
-- MongoDB (NoSQL)
 
-- Elasticsearch (search engine)
+MongoDB (NoSQL)
+---------------
+
+Elasticsearch (search engine)
+-----------------------------
+- 明显优点
+  1. 完全基于分布式的理念而设计. ES 中的各种操作都考虑到了分布式所带来的问题 (节点同步、更新冲突等),
+     es 多节点之间涉及的问题很大程度上都能够自动化地解决, 对用户只暴露出十分简单、方便的 API 和配置.
+  2. 匹配度概念和模糊搜索. ES 中每个 field 都可以建立 inverted index, 经过 tokenization + analysis
+     (分词和分析) 等操作, 一个 field 的值分成多个 token, 在 inverted index 中出现多次. 对搜索输入也
+     做相同的操作, 从而允许计算匹配程度.
+  3. 内存占用小. es 的各种 index 定时 flush 到硬盘上. 内存中只保留比如半个小时的索引数据.
+
+- 缺点
+  1. 搜索语法费劲.
+  2. 有点慢. (因为不占内存?)
 
 Password Management
--------------------
+===================
 - 1Password
 
   * 不提供官方的 linux 客户端. 浏览器插件需要本地有客户端存在才能运行.
