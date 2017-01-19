@@ -9,6 +9,6 @@ sleep 0.1
 scp -p -P 22999 -r "$file" root@devServer:/home/naitree/temp
 declare filename="$(basename "$file")"
 ssh -p 22999 -tt root@devServer << EOF
-cp -r /home/naitree/temp/"$filename" "$dest"
+cp -p -r /home/naitree/temp/"$filename" "$dest"
 logout
 EOF
