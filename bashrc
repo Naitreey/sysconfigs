@@ -5,9 +5,6 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
-# my bin
-[[ ":${PATH}:" == *:$HOME/bin:* ]] || PATH="$HOME/bin${PATH:+:$PATH}"
-
 # Uncomment the following line if you don't like systemctl's auto-paging feature:
 # export SYSTEMD_PAGER=
 
@@ -144,6 +141,12 @@ shopt -s dirspell
 # to enable forward search command with Ctrl-s
 stty -ixon
 
+# my bin
+[[ ":${PATH}:" == *:$HOME/bin:* ]] || PATH="$HOME/bin${PATH:+:$PATH}"
+# pyenv bin
+declare -x PYENV_ROOT="$HOME/.pyenv"
+[[ ":${PATH}:" == *:$PYENV_ROOT/bin:* ]] || PATH="$PYENV_ROOT/bin${PATH:+:$PATH}"
+eval "$(pyenv init -)"
 
 # do not include `-pedantic`, it warns casting from (void*) to function pointer
 # export this variable to environ, so as to be used in makefile
