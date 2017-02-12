@@ -1,0 +1,30 @@
+#!/bin/bash
+declare usage="\
+Usage: package (upgrade|changelog|listfiles) [PACKAGE_NAME]...
+       package help"
+declare subcmd=$1 && shift
+declare ret
+case $subcmd in
+    upgrade )
+        dnf upgrade
+        ret=$?
+        ;;
+    changelog )
+        dnf updateinfo info "$@"
+        ret=$?
+        ;;
+    filelist )
+        dnf repoquery -l "$@"
+        ret=$?
+        ;;
+    help )
+        echo "$usage"
+        ret=0
+        ;;
+    * )
+        echo "Error: unrecognized subcommand: $subcmd"
+        echo "$usage"
+        ret=1
+        ;;
+esac
+exit $ret
