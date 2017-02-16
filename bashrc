@@ -251,6 +251,7 @@ MYPROJECTS=~/Dropbox/professional/my-project
 TRYS=~/Desktop/try
 MATERIALS_READ=~/Dropbox/professional/materials_read
 GOALS=~/Dropbox/goals
+NOTES=~/Dropbox/professional/notes-and-knowledge
 
 special-routes() {
     sudo ip route replace 10.0.0.111/32 via 192.168.18.2 dev eno1 proto static metric 0
