@@ -252,12 +252,14 @@ if [[ "$HOSTNAME" == workstation ]]; then
     TRYS=~/Desktop/try
     MATERIALS_READ=~/Dropbox/professional/materials_read
     GOALS=~/Dropbox/goals
+    NOTES=~/Dropbox/professional/notes-and-knowledge
 elif [[ "$HOSTNAME" == homestation ]]; then
     CSBOOKS=~/Desktop/csbooks
     MYPROJECTS=~/Desktop/my-project
     TRYS=~/Desktop/try
     MATERIALS_READ=~/Desktop/materials_read
     GOALS=~/Desktop/goals
+    NOTES=~/Desktop/professional-notes-knowledge
 fi
 
 special-routes() {
