@@ -75,6 +75,8 @@ Question
 
 - 只有把一件事情做好, 才能做好更多的事情.
 
+- look at my stackexchange and github
+
 Problem
 --------
 - 学习进度太慢 (加班太多且低效, 没有时间看书)
