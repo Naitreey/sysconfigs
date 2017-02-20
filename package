@@ -1,6 +1,6 @@
 #!/bin/bash
 declare usage="\
-Usage: package (upgrade|changelog|listfiles) [PACKAGE_NAME]...
+Usage: package (upgrade|changelog|filelist) [PACKAGE_NAME]...
        package help"
 declare subcmd=$1 && shift
 declare ret

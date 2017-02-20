@@ -176,3 +176,13 @@ Password Management
   * 暂时尝试使用 Enpass. 若没问题, 则付费持续使用.
 
   * 若 1Password 出 linux 版, 则切过去.
+
+Keyboard Layouts
+================
+- QWERTY
+
+- Dvorak, Programmer Dvorak
+
+- 结论
+
+  * unresolved

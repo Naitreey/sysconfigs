@@ -243,15 +243,24 @@ whereisfunc() {
     return $ret
 }
 
-CSBOOKS=~/Dropbox/professional/resources/computer-science/resources
-WEEKLYREPORT=~/Desktop/weekly_report/weekly_report.tex
-SECRECY=~/Desktop/secrecy
-NG8W=$SECRECY/ng8w-project
-MYPROJECTS=~/Dropbox/professional/my-project
-TRYS=~/Desktop/try
-MATERIALS_READ=~/Dropbox/professional/materials_read
-GOALS=~/Dropbox/goals
-NOTES=~/Dropbox/professional/notes-and-knowledge
+if [[ "$HOSTNAME" == workstation ]]; then
+    CSBOOKS=~/Dropbox/professional/resources/computer-science/resources
+    WEEKLYREPORT=~/Desktop/weekly_report/weekly_report.tex
+    SECRECY=~/Desktop/secrecy
+    NG8W=$SECRECY/ng8w-project
+    MYPROJECTS=~/Dropbox/professional/my-project
+    TRYS=~/Desktop/try
+    MATERIALS_READ=~/Dropbox/professional/materials_read
+    GOALS=~/Dropbox/goals
+    NOTES=~/Dropbox/professional/notes-and-knowledge
+elif [[ "$HOSTNAME" == homestation ]]; then
+    CSBOOKS=~/Desktop/csbooks
+    MYPROJECTS=~/Desktop/my-project
+    TRYS=~/Desktop/try
+    MATERIALS_READ=~/Desktop/materials_read
+    GOALS=~/Desktop/goals
+    NOTES=~/Desktop/professional-notes-knowledge
+fi
 
 special-routes() {
     sudo ip route replace 10.0.0.111/32 via 192.168.18.2 dev eno1 proto static metric 0
