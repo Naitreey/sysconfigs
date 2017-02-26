@@ -186,3 +186,30 @@ Keyboard Layouts
 - 结论
 
   * unresolved
+
+Girlfriend
+==========
+- 卫希
+
+  * 总是什么都可以, 永远是 "随意".
+
+  * 无目标, 不努力, 无共同爱好, 无法共同进步.
+
+Operating System
+================
+- Fedora
+  * Pros
+    - RHEL, CentOS upstream, 接近 production system
+    - 软件更新比较及时
+
+  * Cons
+    - GUI 环境的问题: gnome, kde app 兼容性问题
+      * okular crash
+      * ktouch not working
+    - GUI 环境的问题: gnome 自身的各种 bugs
+      * 极偶尔的 gnome-shell crash
+      * keyboard layout 无法全局应用, 设置困难
+
+- Ubuntu
+
+- macOS
