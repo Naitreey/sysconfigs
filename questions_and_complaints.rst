@@ -609,6 +609,21 @@ Problem
 
 - 理智是多么重要的坚持, 而你们毫无理智.
 
+- 你们有非常烦人的一个特点那就是: 总是把工具以错误地并且十分别扭的方式使用.
+  e.g., pyc only, gitlab test 被用于了 build, git submodule 完全为了 submodule 而 submodule,
+  jira 好好的流程被弄乱, pushd/popd 的怪异用法, git 直接扔几百M 的 binary file, etc.,
+  例子举不胜举.
+
+- Protect your "secrets" by pyc? You are just being paranoid about so-called security.
+
+- Don't get paranoid in the name of so-called security.
+
+- You are paranoid about security, distrust opensource and works done by others.
+  You do not actually believe in the products you created, but you have to persuade
+  yourself (so confidently, determinedly) and others around you that you are doing
+  OK, your product are working just fine.
+  **But people capable of reasoning are no fool.**
+
 code quality
 ============
 
