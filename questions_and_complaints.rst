@@ -609,6 +609,10 @@ Problem
 
 - 理智是多么重要的坚持, 而你们毫无理智.
 
+- 你们肯定地告诉我一些鉴定器有字段全集, 等我真跟李林哲要的时候, 他跟我说他知道的字段
+  全集就在 details.js 代码里那些 key. 这他妈需要你告诉我啊??? 你是傻逼还是当我是傻逼
+  呢? 这傻逼 js 是我重写过的好么? 从源代码找字段这种脑残办法就是你能给我的答案???
+
 - 你们有非常烦人的一个特点那就是: 总是把工具以错误地并且十分别扭的方式使用.
   e.g., pyc only, gitlab test 被用于了 build, git submodule 完全为了 submodule 而 submodule,
   jira 好好的流程被弄乱, pushd/popd 的怪异用法, git 直接扔几百M 的 binary file, etc.,
