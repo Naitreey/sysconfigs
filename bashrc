@@ -45,7 +45,6 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
-alias lockscreen='dbus-send --type=method_call --dest=org.gnome.ScreenSaver /org/gnome/ScreenSaver org.gnome.ScreenSaver.Lock'
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -93,9 +92,10 @@ shopt -s interactive_comments
 shopt -s no_empty_cmd_completion
 # exit status of pipeline should reflect the failing commands
 set -o pipefail
-# default editor and viewer
+# default editor, viewer and browser
 export EDITOR=vim
 export VIEWER=vim
+export BROWSER=google-chrome
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"

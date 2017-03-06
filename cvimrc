@@ -7,6 +7,7 @@ let barposition="bottom"
 map <C-f> scrollFullPageDown
 map <C-b> scrollFullPageUp
 map u lastClosedTab
+map R reloadAllTabs
 imap <C-a> beginningOfLine
 imap <C-w> deleteWord
 imap <A-d> deleteForwardWord
