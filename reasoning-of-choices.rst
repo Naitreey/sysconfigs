@@ -203,13 +203,21 @@ Operating System
     - 软件更新比较及时
 
   * Cons
-    - GUI 环境的问题: gnome, kde app 兼容性问题
+    - gnome, kde app 兼容性问题
       * okular crash
       * ktouch not working
-    - GUI 环境的问题: gnome 自身的各种 bugs
+    - gnome 自身的各种 bugs
       * 极偶尔的 gnome-shell crash
-      * keyboard layout 无法全局应用, 设置困难
+      * keyboard layout 无法全局应用, 设置困难.
+        localectl, setxkbmap, gsettings 都不能完全修改布局, 叫人无从下手.
+    - wayland 尚有诸多限制, 目前没有 x11 的 customizability 强.
+      * xdotool 仅有部分功能可用, 例如向指定窗口和位置发点击等操作, 但
+        无法发送 key 值, 几乎残废.
 
 - Ubuntu
+
+- Arch Linux
+
+- Gentoo Linux
 
 - macOS
