@@ -628,6 +628,15 @@ Problem
   OK, your product are working just fine.
   **But people capable of reasoning are no fool.**
 
+- 解决售后问题的关键是解决产品质量问题. 在产品质量成渣时去教售后人员如何现场解决问题是
+  本末倒置.
+
+- The company's getting crazy. 不带工卡都要罚钱了.
+
+
+
+
+
 code quality
 ============
 
