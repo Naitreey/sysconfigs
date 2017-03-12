@@ -634,7 +634,7 @@ Problem
 
 - The company's getting crazy. 不带工卡都要罚钱了.
 
-
+- 无理鄙视 nfs, 一个远优于 sshfs 的网络文件系统.
 
 
 
