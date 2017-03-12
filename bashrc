@@ -272,7 +272,7 @@ special-routes() {
 }
 
 backup-home() {
-    sudo rsync -avu --delete --exclude='.cache' --exclude='vm/*.qcow2' --exclude='Downloads' --exclude='Desktop/try' --exclude='.mozilla' /home/naitree/ naitree@workstation
+    sudo rsync -avu --delete --exclude='.cache' --exclude='vm/*.qcow2' --exclude='Desktop/try' --exclude='.mozilla' /home/naitree/ naitree@workstation
 }
 
 # vim:ft=sh
