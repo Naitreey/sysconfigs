@@ -1,0 +1,35 @@
+#!/bin/bash
+set -x
+exec &>/tmp/log
+emulate_click() {
+    declare x=$1 y=$2 key="$3"
+    if xdotool getactivewindow getwindowname | grep -q 'Foxit Reader'; then
+        xdotool mousemove --sync $x $y click 1 mousemove --sync restore
+    else
+        xdotool key --clearmodifiers --delay 0 $key
+    fi
+}
+
+main() {
+    if (($# == 1)); then
+        declare cmd=$1
+    else
+        exit 1
+    fi
+
+    case $cmd in
+        highlight )
+            declare pos=(22 148) key='alt+1'
+            ;;
+        underline )
+            declare pos=(111 148) key='alt+2'
+            ;;
+        inline-text )
+            declare pos=(301 148) key='alt+3'
+            ;;
+    esac
+
+    emulate_click "${pos[@]}" "$key"
+}
+
+main "$@"
