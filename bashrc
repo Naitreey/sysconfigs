@@ -41,10 +41,11 @@ fi
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-# some more ls aliases
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
+alias xo='xdg-open'
+alias re='readlink -e'
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -261,6 +262,7 @@ elif [[ "$HOSTNAME" == homestation ]]; then
     GOALS=~/Desktop/goals
     NOTES=~/Desktop/professional-notes-knowledge
 fi
+STORAGE=/run/media/naitree/9d2b094e-cbc6-48d2-aeb3-1f513dfaaf03
 
 special-routes() {
     sudo ip route replace 10.0.0.111/32 via 192.168.18.2 dev eno1 proto static metric 0
