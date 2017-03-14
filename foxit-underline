@@ -1,6 +1,0 @@
-#!/bin/bash
-if xdotool getactivewindow getwindowname | grep -q 'Foxit Reader'; then
-    xdotool mousemove --sync 111 148 click 1
-else
-    xdotool key alt+3
-fi
