@@ -224,3 +224,18 @@ Operating System
 - Gentoo Linux
 
 - macOS
+
+Company
+=======
+- 安天
+  * oh, for god sake
+
+- 天融信
+  * 工作环境搓, 工作流程做得没有说得好.
+
+- 360
+  * 感觉也挺苦逼的.
+  * 同一个政府行业, 不知做得如何.
+
+- 小米
+  * 目前感觉不错.
