@@ -662,6 +662,8 @@ Problem
 
 - 你们准备把所有人都弄成全栈工程师 a.k.a. 废物.
 
+- 嫌慢用 C, cython, 别他妈一会儿 cpython 一会儿 pypy, 代码兼容性跟屎一样
+
 code quality
 ============
 
