@@ -100,7 +100,9 @@ What Do Developers Think Employers Should Prioritize When Recruiting?
 
 - 只有把一件事情做好, 才能做好更多的事情.
 
-- look at my stackexchange and github
+- stackexchange profiles
+  github repos
+  opensource contributions (Elasticsearch, netcat, runc, etc.)
 
 Problem
 --------
