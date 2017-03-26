@@ -52,6 +52,28 @@ Question
 
 - Do you do hallway usability testing?
 
+What Do Developers Think Employers Should Prioritize When Recruiting?
+---------------------------------------------------------------------
+#. Communication skills
+
+#. Track record of getting things done
+
+#. Knowledge of algorithms and data structures
+
+#. Experience with specific tools (libraries, frameworks, etc.) used by the employer
+
+#. Experience with specific project management tools & techniques
+
+#. Previous companies worked at
+
+#. Contributions to open source projects
+
+#. Educational credentials (e.g. schools attended, specific field of study, grades earned)
+
+#. Previous job titles held
+
+#. Stack Overflow reputation
+
 能力, 优势, 经验
 ----------------
 - 负责整个产品开发:
