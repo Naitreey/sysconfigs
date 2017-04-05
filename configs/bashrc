@@ -105,7 +105,7 @@ export BROWSER=google-chrome
 # \[-----\] part does not occupy screen space
 # \e[---m part is color code
 # add git repo status to ps1
-source ~/git-prompt.sh
+source ~/.git-prompt
 __jobnums() {
     declare jobnums=$(jobs -p | wc -l)
     [[ $jobnums -gt 0 ]] && echo -n "$jobnums:"
