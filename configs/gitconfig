@@ -4,6 +4,7 @@
 [core]
 	editor = gvim -f
 	excludesfile = ~/.gitignore
+	quotePath = false
 [merge]
 	tool = gvimdiff
 [rerere]
