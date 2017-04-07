@@ -40,6 +40,7 @@ fi
 
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+export LINES COLUMNS
 
 alias ll='ls -alF'
 alias la='ls -A'
@@ -105,7 +106,7 @@ export BROWSER=google-chrome
 # \[-----\] part does not occupy screen space
 # \e[---m part is color code
 # add git repo status to ps1
-source ~/.git-prompt
+source ~/git-prompt.sh
 __jobnums() {
     declare jobnums=$(jobs -p | wc -l)
     [[ $jobnums -gt 0 ]] && echo -n "$jobnums:"
@@ -142,8 +143,11 @@ shopt -s dirspell
 # to enable forward search command with Ctrl-s
 stty -ixon
 
-# my bin
-[[ ":${PATH}:" == *:$HOME/bin:* ]] || PATH="$HOME/bin${PATH:+:$PATH}"
+# ensure my bin at front of PATH
+[[ ":${PATH}:" == *:$HOME/bin:* ]] &&
+    PATH=$(echo -n $PATH | awk -v RS=: -v ORS=: -v mypath=$HOME/bin \
+           '$0 == mypath {next} {print} END {printf("\b")}')
+PATH="$HOME/bin${PATH:+:$PATH}"
 # pyenv bin
 declare -x PYENV_ROOT="$HOME/.pyenv"
 [[ ":${PATH}:" == *:$PYENV_ROOT/bin:* ]] || PATH="$PYENV_ROOT/bin${PATH:+:$PATH}"
