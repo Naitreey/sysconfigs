@@ -248,23 +248,17 @@ whereisfunc() {
     return $ret
 }
 
+CSBOOKS=~/mystuff/profession/resources/cs
+MYPROJECTS=~/mystuff/profession/my-projects
+TRYS=~/Desktop/try
+MATERIALS_READ=~/mystuff/profession/materials_read
+GOALS=~/mystuff/goals
+NOTES=~/mystuff/profession/notes-and-knowledge
+CAREER=~/mystuff/career
 if [[ "$HOSTNAME" == workstation ]]; then
-    CSBOOKS=~/Dropbox/professional/resources/computer-science/resources
     WEEKLYREPORT=~/Desktop/weekly_report/weekly_report.tex
     SECRECY=~/Desktop/secrecy
     NG8W=$SECRECY/ng8w-project
-    MYPROJECTS=~/Dropbox/professional/my-project
-    TRYS=~/Desktop/try
-    MATERIALS_READ=~/Dropbox/professional/materials_read
-    GOALS=~/Dropbox/goals
-    NOTES=~/Dropbox/professional/notes-and-knowledge
-elif [[ "$HOSTNAME" == homestation ]]; then
-    CSBOOKS=~/Desktop/csbooks
-    MYPROJECTS=~/Desktop/my-project
-    TRYS=~/Desktop/try
-    MATERIALS_READ=~/Desktop/materials_read
-    GOALS=~/Desktop/goals
-    NOTES=~/Desktop/professional-notes-knowledge
 fi
 STORAGE=/run/media/naitree/9d2b094e-cbc6-48d2-aeb3-1f513dfaaf03
 
