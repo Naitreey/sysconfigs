@@ -95,8 +95,11 @@ def sync_with_remote_repo(repo):
         except EOFError:
             sys.exit(0)
     # push back new changes
-    remote_commit = repo.remotes[remote_repo].refs[remote_branch].commit
-    if repo.is_ancestor(remote_commit, repo.head.commit):
+    remote_commit = repo.head.ref.tracking_branch().commit
+    head_commit = repo.head.commit
+    # A counts as ancestor of B even if A == B
+    if (repo.is_ancestor(remote_commit, head_commit) and
+        remote_commit != head_commit):
         subsection(f"Pushing {repo.head.ref.name} to {tracking_branch}\n")
         repo.remotes[remote_repo].push(f"{repo.head.ref.name}:{remote_branch}")
     # push annex-ed files to remote
