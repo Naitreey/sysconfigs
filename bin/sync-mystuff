@@ -1,0 +1,155 @@
+#!/bin/env python3
+# 首先保证所有修改和最底层的 submodule 的修改已经提交.
+# 对于 modified working tree, 若不是 submodule, 则报错退出, 若是 submodule 则进入处理.
+# 对于 modified index, 报错退出.
+# 对于 untracked, 若是 git repo 则不处理, 否则报错退出.
+
+# 对于每层 repo, 如果有 submodule commit 为 modified 状态, 保证 submodule up-to-date,
+# 然后将 new submodule commit 提交 (配以必要的 commit message).
+
+# 对于每层 repo, 保证 up-to-date: checkout master, fetch remote tracking
+# branch, 若有更新, merge with master, 若没有, 直接 push 至 remote.
+# merge 时, 若没有 merge conflict, 让用户检查并确认 merge 效果, 若有 merge conflict,
+# 报错退出.
+
+from git import Repo, GitCommandError
+from pathlib import Path
+from io import StringIO
+import sys
+
+def main():
+    repo = Repo()
+    if repo.bare:
+        raise BareRepositoryError
+    check_semi_clean(repo)
+    sync_with_remote_repo(repo)
+
+def check_semi_clean(repo):
+    ensure_branch(repo, "master")
+    check_untracked(repo)
+    check_index(repo)
+    check_working_tree(repo)
+    for sm in repo.submodules:
+        check_semi_clean(sm.module())
+
+def sync_with_remote_repo(repo):
+    print(f"In {repo.working_dir}")
+    do_commit = False
+    author = committer = Actor("Naitree Zhu", "naitreey@gmail.com")
+    # commit submodule changes
+    with StringIO() as commit_msg:
+        commit_msg.write("update submodules\n\n")
+        for sm in repo.submodules:
+            sm_repo = sm.module()
+            sync_with_remote(sm_repo)
+            if sm.binsha != sm_repo.head.commit.binsha:
+                do_commit = True
+                commit_msg.write(repo.git.submodule("summary", "--", sm.path))
+                sm.binsha = sm_repo.head.commit.binsha
+                repo.index.add([sm])
+        # working directory should contain only untracked submodules by now
+        if repo.index.diff(other=None):
+            raise DirtyWorkingTree(f"{repo.working_dir}")
+        if do_commit:
+            repo.index.commit(commit_msg.getvalue(),
+                              author=author,
+                              committer=author,
+                              skip_hooks=True, # skip pre-commit hook
+                              )
+    # fetch, merge remote changes and push back
+    tracking_branch = repo.head.ref.tracking_branch().name
+    remote_repo, remote_branch = tracking_branch.split("/")
+    fetch_info = \
+        repo.remotes[remote_repo].fetch()[tracking_branch]
+    if fetch_info.commit != repo.head.commit:
+        print(f"Merging {tracking_branch} into {repo.head.ref.name}:")
+        try:
+            repo.git.merge(fetch_info.name, no_commit=True)
+        except GitCommandError:
+            print("Merge failed, terminating...")
+            sys.exit(1)
+        else:
+            print("Merge succeeded.")
+            print(repo.git.diff(c=True, color="always"))
+        try:
+            if input("Is this ok [Y]es/[N]o ? ").lower().startswith("y"):
+                repo.index.commit(f"merged new commits from {tracking_branch}",
+                                  parent_commits=[repo.head.commit,
+                                                  fetch_info.commit],
+                                  head=True, skip_hooks=True)
+                repo.head.reset(index=True, working_tree=True)
+            else:
+                sys.exit(0)
+        except EOFError:
+            sys.exit(0)
+        else:
+            repo.remotes[remote_repo].push(f"{repo.head.ref.name}:{remote_branch}")
+    # push annex-ed files to remote
+    sync_with_remote_annex(repo)
+
+def sync_with_remote_annex(repo):
+    if annex_exists_and_initialized(repo):
+        repo.git.annex("copy",
+                       **{
+                           "to": "storage-bup",
+                           "not": True,
+                           "in": "storage-bup"
+                       })
+
+def annex_exists_and_initialized(repo):
+    try:
+        return (Path(repo.git_dir, "annex").is_dir() and
+                repo.branches['git-annex'])
+    except IndexError:
+        return False
+
+def ensure_branch(repo, name):
+    # not detached and head points to `name` branch already
+    if not repo.head.is_detached and repo.head.ref.name == name:
+        return
+    # abort checkout if working tree or index has changes
+    if repo.is_dirty():
+        raise DirtyState(f"{repo.working_dir}")
+    else:
+        repo.branches[name].checkout()
+
+def check_untracked(repo):
+    untracked = repo.untracked_files
+    if not untracked:
+        return
+    for file in untracked:
+        p = Path(file)
+        # skip untracked git repo
+        if p.is_dir() and (p/".git").is_dir():
+            continue
+        else:
+            raise UntrackedFileError(f"{p!s}")
+
+def check_index(repo):
+    if repo.index.diff(repo.head.commit):
+        raise DirtyIndex(f"{repo.working_dir}")
+    else:
+        return
+
+def check_working_tree(repo):
+    for diff in repo.index.diff(other=None):
+        # 0o160000 is gitlink, which is used by submodule object
+        # skip modified submodule object
+        if diff.a_mode == 0o160000:
+            continue
+        else:
+            raise DirtyWorkingTree(f"{repo.working_dir}")
+
+
+class SyncError(Exception):
+    pass
+class UntrackedFileError(SyncError):
+    pass
+class BareRepositoryError(SyncError):
+    pass
+class DirtyState(SyncError):
+    pass
+class DirtyWorkingTree(DirtyState):
+    pass
+class DirtyIndex(DirtyState):
+    pass
