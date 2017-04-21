@@ -75,13 +75,14 @@ def sync_with_remote_repo(repo):
     if not repo.is_ancestor(fetch_info.commit, repo.head.commit):
         subsection(f"Merging {tracking_branch} into {repo.head.ref.name}:\n")
         try:
-            subsubsection(repo.git.merge(fetch_info.name, no_commit=True))
+            subsubsection(repo.git.merge(
+                fetch_info.name, no_commit=True).rstrip()+"\n") # ensure newline
         except GitCommandError:
             subsection("Merge failed, terminating...\n")
             sys.exit(1)
         else:
             subsection("Merge succeeded.\n")
-            subsection(repo.git.diff(c=True, color="always"))
+            subsection(repo.git.diff(cached=True, color="always"))
         try:
             if input("Is this ok [Y]es/[N]o ? ").lower().startswith("y"):
                 repo.index.commit(f"merged new commits from {tracking_branch}",
@@ -94,8 +95,10 @@ def sync_with_remote_repo(repo):
         except EOFError:
             sys.exit(0)
     # push back new changes
-    subsection(f"Pushing {repo.head.ref.name} to {tracking_branch}\n")
-    repo.remotes[remote_repo].push(f"{repo.head.ref.name}:{remote_branch}")
+    remote_commit = repo.remotes[remote_repo].refs[remote_branch].commit
+    if repo.is_ancestor(remote_commit, repo.head.commit):
+        subsection(f"Pushing {repo.head.ref.name} to {tracking_branch}\n")
+        repo.remotes[remote_repo].push(f"{repo.head.ref.name}:{remote_branch}")
     # push annex-ed files to remote
     sync_with_remote_annex(repo)
 
