@@ -16,14 +16,16 @@
 # 对于 remote 是 github 上且不是自己的 repo, 不去保证 up-to-date, 对于自己 repo,
 # 要保证 up-to-date
 
-from git import Repo, GitCommandError, Actor
-from pathlib import Path
 from io import StringIO
-import sys
+from os.path import relpath
+from pathlib import Path
+from shlex import split
+from textwrap import indent
 from urllib.parse import urlparse
 import os
-from os.path import relpath
-from textwrap import indent
+import sys
+
+from git import Repo, GitCommandError, Actor
 
 def main():
     repo = Repo()
@@ -160,10 +162,11 @@ def check_untracked(repo):
             raise UntrackedFileError(f"{relpath(p)!s}")
 
 def check_index(repo):
-    if repo.index.diff(repo.head.commit):
-        raise DirtyIndex(f"{relpath(repo.working_dir)}")
-    else:
-        return
+    for diff in repo.index.diff(repo.head.commit):
+        if diff.a_mode == 0o160000:
+            continue
+        else:
+            raise DirtyIndex(f"{relpath(repo.working_dir)}")
 
 def check_working_tree(repo):
     for diff in repo.index.diff(other=None):
