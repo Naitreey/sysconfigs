@@ -1,3 +1,5 @@
+[color]
+	ui = auto
 [user]
 	email = naitreey@gmail.com
 	name = Naitree Zhu
@@ -14,7 +16,6 @@
 	filename = magenta
 	linenumber = green
 	separator = cyan
-[credential]
 [credential]
 	helper = gnome-keyring
 [alias]
