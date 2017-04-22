@@ -22,6 +22,7 @@ from pathlib import Path
 from shlex import split
 from textwrap import indent
 from urllib.parse import urlparse
+from contextlib import contextmanager
 import os
 import sys
 
@@ -31,8 +32,9 @@ def main():
     repo = Repo()
     if repo.bare:
         raise BareRepositoryError
-    check_semi_clean(repo)
-    sync_with_remote_repo(repo)
+    with colored_git(repo):
+        check_semi_clean(repo)
+        sync_with_remote_repo(repo)
 
 def check_semi_clean(repo):
     section(f"Checking status of {relpath(repo.working_dir)}\n")
@@ -80,21 +82,26 @@ def sync_with_remote_repo(repo):
                         repo.merge_base(repo.head.commit, fetch_info.commit)[0])
         try:
             if fast_forward:
-                subsubsection(repo.git.merge(fetch_info.name,
-                                             ff_only=True).rstrip()+"\n")
+                output = repo.git.merge(fetch_info.name,
+                                        ff_only=True).rstrip()
             else:
-                subsubsection(repo.git.merge(fetch_info.name,
-                                             no_ff=True,
-                                             no_commit=True).rstrip()+"\n")
+                output = repo.git.merge(fetch_info.name,
+                                        no_ff=True,
+                                        no_commit=True).rstrip()
         except GitCommandError:
             subsection("Merge failed, terminating...\n")
             sys.exit(1)
         else:
+            if output:
+                subsubsection(output+"\n")
             subsection("Merge succeeded.\n")
         # if non-fast-forwardable, let user check status & diff, then commit
         if not fast_forward:
-            subsection(repo.git.execute(split("git -c color.ui=always status")))
-            subsection(repo.git.diff(cached=True, color="always").rstrip()+"\n")
+            subsection(repo.git.status())
+            subsection(repo.git.log("--left-right",
+                                    "--oneline",
+                                    f"{repo.head.ref.name}...{tracking_branch}"))
+            subsection(repo.git.diff(cached=True).rstrip()+"\n")
             try:
                 if input("Is this ok [Y]es/[N]o ? ").lower().startswith("y"):
                     repo.index.commit(f"merged new commits from {tracking_branch}",
@@ -198,6 +205,25 @@ def subsection(msg):
 
 def subsubsection(msg):
     print_msg(msg, level=2)
+
+@contextmanager
+def colored_git(repo):
+    """
+    Set global ``color.ui == always`` in context.
+
+    We make global modification because submodules.
+    """
+    with repo.config_reader("global") as reader:
+        setting = reader.get("color", "ui", fallback="auto")
+    with repo.config_writer("global") as writer:
+        writer.add_section("color")
+        writer.set("color", "ui", "always")
+    try:
+        yield
+    finally:
+        with repo.config_writer("global") as writer:
+            writer.add_section("color")
+            writer.set("color", "ui", setting)
 
 class SyncError(Exception):
     pass
