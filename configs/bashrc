@@ -45,6 +45,7 @@ export LINES COLUMNS
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
+alias e='gvim'
 alias xo='xdg-open'
 alias re='readlink -e'
 
