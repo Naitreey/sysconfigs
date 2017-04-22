@@ -16,13 +16,13 @@
 # 对于 remote 是 github 上且不是自己的 repo, 不去保证 up-to-date, 对于自己 repo,
 # 要保证 up-to-date
 
+from functools import update_wrapper
 from io import StringIO
 from os.path import relpath
 from pathlib import Path
 from shlex import split
 from textwrap import indent
 from urllib.parse import urlparse
-from contextlib import contextmanager
 import os
 import sys
 
@@ -32,9 +32,8 @@ def main():
     repo = Repo()
     if repo.bare:
         raise BareRepositoryError
-    with colored_git(repo):
-        check_semi_clean(repo)
-        sync_with_remote_repo(repo)
+    check_semi_clean(repo)
+    sync_with_remote_repo(repo)
 
 def check_semi_clean(repo):
     section(f"Checking status of {relpath(repo.working_dir)}\n")
@@ -47,6 +46,25 @@ def check_semi_clean(repo):
             continue
         check_semi_clean(sm.module())
 
+def colored_git(func):
+    """
+    Set ``color.ui == always`` in local context.
+    """
+    def wrapper(repo):
+        with repo.config_reader("repository") as reader:
+            setting = reader.get("color", "ui", fallback="auto")
+        with repo.config_writer("repository") as writer:
+            writer.add_section("color")
+            writer.set("color", "ui", "always")
+        try:
+            func(repo)
+        finally:
+            with repo.config_writer("repository") as writer:
+                writer.add_section("color")
+                writer.set("color", "ui", setting)
+    return update_wrapper(wrapper, func)
+
+@colored_git
 def sync_with_remote_repo(repo):
     do_commit = False
     author = committer = Actor("Naitree Zhu", "naitreey@gmail.com")
@@ -205,25 +223,6 @@ def subsection(msg):
 
 def subsubsection(msg):
     print_msg(msg, level=2)
-
-@contextmanager
-def colored_git(repo):
-    """
-    Set global ``color.ui == always`` in context.
-
-    We make global modification because submodules.
-    """
-    with repo.config_reader("global") as reader:
-        setting = reader.get("color", "ui", fallback="auto")
-    with repo.config_writer("global") as writer:
-        writer.add_section("color")
-        writer.set("color", "ui", "always")
-    try:
-        yield
-    finally:
-        with repo.config_writer("global") as writer:
-            writer.add_section("color")
-            writer.set("color", "ui", setting)
 
 class SyncError(Exception):
     pass
