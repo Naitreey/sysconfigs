@@ -76,26 +76,36 @@ def sync_with_remote_repo(repo):
     # merge remote changes
     if not repo.is_ancestor(fetch_info.commit, repo.head.commit):
         subsection(f"Merging {tracking_branch} into {repo.head.ref.name}:\n")
+        fast_forward = (repo.head.commit ==
+                        repo.merge_base(repo.head.commit, fetch_info.commit)[0])
         try:
-            subsubsection(repo.git.merge(
-                fetch_info.name, no_commit=True).rstrip()+"\n") # ensure newline
+            if fast_forward:
+                subsubsection(repo.git.merge(fetch_info.name,
+                                             ff_only=True).rstrip()+"\n")
+            else:
+                subsubsection(repo.git.merge(fetch_info.name,
+                                             no_ff=True,
+                                             no_commit=True).rstrip()+"\n")
         except GitCommandError:
             subsection("Merge failed, terminating...\n")
             sys.exit(1)
         else:
             subsection("Merge succeeded.\n")
-            subsection(repo.git.diff(cached=True, color="always"))
-        try:
-            if input("Is this ok [Y]es/[N]o ? ").lower().startswith("y"):
-                repo.index.commit(f"merged new commits from {tracking_branch}",
-                                  parent_commits=[repo.head.commit,
-                                                  fetch_info.commit],
-                                  head=True, skip_hooks=True)
-                repo.head.reset(index=True, working_tree=True)
-            else:
+        # if non-fast-forwardable, let user check status & diff, then commit
+        if not fast_forward:
+            subsection(repo.git.execute(split("git -c color.ui=always status")))
+            subsection(repo.git.diff(cached=True, color="always").rstrip()+"\n")
+            try:
+                if input("Is this ok [Y]es/[N]o ? ").lower().startswith("y"):
+                    repo.index.commit(f"merged new commits from {tracking_branch}",
+                                      parent_commits=[repo.head.commit,
+                                                      fetch_info.commit],
+                                      head=True, skip_hooks=True)
+                    repo.head.reset(index=True, working_tree=True)
+                else:
+                    sys.exit(0)
+            except EOFError:
                 sys.exit(0)
-        except EOFError:
-            sys.exit(0)
     # push back new changes
     remote_commit = repo.head.ref.tracking_branch().commit
     head_commit = repo.head.commit
