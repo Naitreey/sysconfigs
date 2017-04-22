@@ -116,9 +116,10 @@ def sync_with_remote_repo(repo):
         # if non-fast-forwardable, let user check status & diff, then commit
         if not fast_forward:
             subsection(repo.git.status())
-            subsection(repo.git.log("--left-right",
-                                    "--oneline",
-                                    f"{repo.head.ref.name}...{tracking_branch}"))
+            subsection(repo.git.log(
+                "--left-right",
+                "--oneline",
+                f"{repo.head.ref.name}...{tracking_branch}").rstrip()+"\n")
             subsection(repo.git.diff(cached=True).rstrip()+"\n")
             try:
                 if input("Is this ok [Y]es/[N]o ? ").lower().startswith("y"):
