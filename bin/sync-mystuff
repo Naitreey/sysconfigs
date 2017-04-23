@@ -23,6 +23,7 @@ from pathlib import Path
 from shlex import split
 from textwrap import indent
 from urllib.parse import urlparse
+from subprocess import check_call, CalledProcessError
 import os
 import sys
 
@@ -161,12 +162,13 @@ def is_ignored_submodule(sm):
 def sync_with_remote_annex(repo):
     if annex_exists_and_initialized(repo):
         subsection("Copying annex-ed files\n")
-        subsubsection(repo.git.annex("copy", **{
-            "to": "storage-bup",
-            "not": True,
-            "in": "storage-bup",
-            "jobs": 4
-        }))
+        try:
+            check_call(split("git annex copy --to=storage-bup"
+                             " --not --in=storage-bup --jobs=4"),
+                       cwd=repo.working_dir)
+        except CalledProcessError:
+            print("error in syncing annex-ed files, terminating...")
+            sys.exit(1)
 
 def annex_exists_and_initialized(repo):
     try:
