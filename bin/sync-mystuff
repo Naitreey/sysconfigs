@@ -16,21 +16,32 @@
 # 对于 remote 是 github 上且不是自己的 repo, 不去保证 up-to-date, 对于自己 repo,
 # 要保证 up-to-date
 
-from git import Repo, GitCommandError, Actor
-from pathlib import Path
+from functools import update_wrapper
 from io import StringIO
-import sys
-from urllib.parse import urlparse
-import os
 from os.path import relpath
+from pathlib import Path
+from shlex import split
 from textwrap import indent
+from urllib.parse import urlparse
+from subprocess import check_call, CalledProcessError
+import os
+import sys
+
+from git import Repo, GitCommandError, Actor
 
 def main():
+    version_check()
     repo = Repo()
     if repo.bare:
         raise BareRepositoryError
     check_semi_clean(repo)
     sync_with_remote_repo(repo)
+
+def version_check():
+    required = (3, 6, 0)
+    if sys.version_info < required:
+        print("minimal python version required: %r" % required)
+        sys.exit(1)
 
 def check_semi_clean(repo):
     section(f"Checking status of {relpath(repo.working_dir)}\n")
@@ -43,6 +54,25 @@ def check_semi_clean(repo):
             continue
         check_semi_clean(sm.module())
 
+def colored_git(func):
+    """
+    Set ``color.ui == always`` in local context.
+    """
+    def wrapper(repo):
+        with repo.config_reader("repository") as reader:
+            setting = reader.get("color", "ui", fallback="auto")
+        with repo.config_writer("repository") as writer:
+            writer.add_section("color")
+            writer.set("color", "ui", "always")
+        try:
+            func(repo)
+        finally:
+            with repo.config_writer("repository") as writer:
+                writer.add_section("color")
+                writer.set("color", "ui", setting)
+    return update_wrapper(wrapper, func)
+
+@colored_git
 def sync_with_remote_repo(repo):
     do_commit = False
     author = committer = Actor("Naitree Zhu", "naitreey@gmail.com")
@@ -74,26 +104,42 @@ def sync_with_remote_repo(repo):
     # merge remote changes
     if not repo.is_ancestor(fetch_info.commit, repo.head.commit):
         subsection(f"Merging {tracking_branch} into {repo.head.ref.name}:\n")
+        fast_forward = (repo.head.commit ==
+                        repo.merge_base(repo.head.commit, fetch_info.commit)[0])
         try:
-            subsubsection(repo.git.merge(
-                fetch_info.name, no_commit=True).rstrip()+"\n") # ensure newline
+            if fast_forward:
+                output = repo.git.merge(fetch_info.name,
+                                        ff_only=True).rstrip()
+            else:
+                output = repo.git.merge(fetch_info.name,
+                                        no_ff=True,
+                                        no_commit=True).rstrip()
         except GitCommandError:
             subsection("Merge failed, terminating...\n")
             sys.exit(1)
         else:
+            if output:
+                subsubsection(output+"\n")
             subsection("Merge succeeded.\n")
-            subsection(repo.git.diff(cached=True, color="always"))
-        try:
-            if input("Is this ok [Y]es/[N]o ? ").lower().startswith("y"):
-                repo.index.commit(f"merged new commits from {tracking_branch}",
-                                  parent_commits=[repo.head.commit,
-                                                  fetch_info.commit],
-                                  head=True, skip_hooks=True)
-                repo.head.reset(index=True, working_tree=True)
-            else:
+        # if non-fast-forwardable, let user check status & diff, then commit
+        if not fast_forward:
+            subsection(repo.git.status())
+            subsection(repo.git.log(
+                "--left-right",
+                "--oneline",
+                f"{repo.head.ref.name}...{tracking_branch}").rstrip()+"\n")
+            subsection(repo.git.diff(cached=True).rstrip()+"\n")
+            try:
+                if input("Is this ok [Y]es/[N]o ? ").lower().startswith("y"):
+                    repo.index.commit(f"merged new commits from {tracking_branch}",
+                                      parent_commits=[repo.head.commit,
+                                                      fetch_info.commit],
+                                      head=True, skip_hooks=True)
+                    repo.head.reset(index=True, working_tree=True)
+                else:
+                    sys.exit(0)
+            except EOFError:
                 sys.exit(0)
-        except EOFError:
-            sys.exit(0)
     # push back new changes
     remote_commit = repo.head.ref.tracking_branch().commit
     head_commit = repo.head.commit
@@ -123,12 +169,13 @@ def is_ignored_submodule(sm):
 def sync_with_remote_annex(repo):
     if annex_exists_and_initialized(repo):
         subsection("Copying annex-ed files\n")
-        subsubsection(repo.git.annex("copy", **{
-            "to": "storage-bup",
-            "not": True,
-            "in": "storage-bup",
-            "jobs": 4
-        }))
+        try:
+            check_call(split("git annex copy --to=storage-bup"
+                             " --not --in=storage-bup --jobs=4"),
+                       cwd=repo.working_dir)
+        except CalledProcessError:
+            subsection("error in syncing annex-ed files, terminating...\n")
+            sys.exit(1)
 
 def annex_exists_and_initialized(repo):
     try:
@@ -160,10 +207,11 @@ def check_untracked(repo):
             raise UntrackedFileError(f"{relpath(p)!s}")
 
 def check_index(repo):
-    if repo.index.diff(repo.head.commit):
-        raise DirtyIndex(f"{relpath(repo.working_dir)}")
-    else:
-        return
+    for diff in repo.index.diff(repo.head.commit):
+        if diff.a_mode == 0o160000:
+            continue
+        else:
+            raise DirtyIndex(f"{relpath(repo.working_dir)}")
 
 def check_working_tree(repo):
     for diff in repo.index.diff(other=None):
