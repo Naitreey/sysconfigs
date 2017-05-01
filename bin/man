@@ -1,17 +1,22 @@
 #!/bin/bash
+
 lines=60
 columns=100
 if (($LINES >= $lines && $COLUMNS >= $columns)); then
     /usr/bin/man "$@"
     ret=$?
 else
-    old_lines=$LINES
-    old_columns=$COLUMNS
     # we need to modify LINES COLUMNS in man's environ because
     # COLUMNS affects man's formatting, which happens before
     # invoking `-P` pager command.
     LINES=60 COLUMNS=100 /usr/bin/man -P man-less "$@"
     ret=$?
-    resize -s $old_lines $old_columns >/dev/null
+    # TODO resize terminal back to original size
+    # disable this for now as it breaks when multiple
+    # instances of man opening in different bashs of
+    # the same terminal window.
+    # need a way to identify which terminal window
+    # this man command is running in.
+    #resize -s $old_lines $old_columns >/dev/null
 fi
 exit $ret
