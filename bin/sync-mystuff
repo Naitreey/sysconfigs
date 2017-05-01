@@ -39,14 +39,14 @@ def colored_git(func):
     """
     Set ``color.ui == always`` in local context.
     """
-    def wrapper(repo):
+    def wrapper(repo, *args, **kwargs):
         with repo.config_reader("repository") as reader:
             setting = reader.get("color", "ui", fallback="auto")
         with repo.config_writer("repository") as writer:
             writer.add_section("color")
             writer.set("color", "ui", "always")
         try:
-            func(repo)
+            func(repo, *args, **kwargs)
         finally:
             with repo.config_writer("repository") as writer:
                 writer.add_section("color")
