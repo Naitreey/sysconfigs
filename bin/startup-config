@@ -1,0 +1,42 @@
+#!/bin/env python3
+import sys
+from subprocess import run, PIPE
+
+def get_device_id(device_pattern):
+    p = run(["xinput", "--list"], check=True, stdout=PIPE, encoding="utf-8")
+    for line in p.stdout.splitlines():
+        if device_pattern not in line:
+            continue
+        for field in line.split():
+            if not field.startswith("id="):
+                continue
+            return int(field.partition("id=")[-1])
+    else:
+        raise DeviceNotFound(f"device of pattern {device_pattern} not found")
+
+def setup_mouse():
+    try:
+        mouse_id = get_device_id("Mouse")
+    except DeviceNotFound:
+        print("mouse not found", file=sys.stderr)
+        return
+    run(["xinput", "--set-prop", str(mouse_id),
+         "libinput Accel Speed", "-0.9"], check=True)
+
+def setup_trackpad():
+    try:
+        trackpad_id = get_device_id("GlidePoint")
+    except DeviceNotFound:
+        print("trackpad not found", file=sys.stderr)
+        return
+    run(["xinput", "--set-prop", str(trackpad_id),
+         "libinput Tapping Enabled", "1"], check=True)
+    run(["xinput", "--set-prop", str(trackpad_id),
+         "libinput Natural Scrolling Enabled", "1"], check=True)
+
+class DeviceNotFound(Exception):
+    pass
+
+if __name__ == "__main__":
+    setup_mouse()
+    setup_trackpad()
