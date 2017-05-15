@@ -1,11 +1,13 @@
 #!/bin/env python3
 import sys
+import re
 from subprocess import run, PIPE
 
 def get_device_id(device_pattern):
+    pattern = re.compile(device_pattern, re.IGNORECASE)
     p = run(["xinput", "--list"], check=True, stdout=PIPE, encoding="utf-8")
     for line in p.stdout.splitlines():
-        if device_pattern not in line:
+        if not pattern.search(line):
             continue
         for field in line.split():
             if not field.startswith("id="):
@@ -25,7 +27,7 @@ def setup_mouse():
 
 def setup_trackpad():
     try:
-        trackpad_id = get_device_id("GlidePoint")
+        trackpad_id = get_device_id(r"GlidePoint|TouchPad")
     except DeviceNotFound:
         print("trackpad not found", file=sys.stderr)
         return
