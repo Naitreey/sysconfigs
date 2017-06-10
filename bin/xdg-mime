@@ -1,0 +1,10 @@
+#!/bin/bash
+/usr/bin/xdg-mime "$@" &&
+{
+    if [[ "$1" == default ]]; then
+        # fix xdg-mime not refreshing kde config cache on KDE5
+        if [[ $XDG_CURRENT_DESKTOP == KDE && $KDE_SESSION_VERSION == 5 ]]; then
+            kbuildsycoca5 &>/dev/null
+        fi
+    fi
+}
