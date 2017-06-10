@@ -153,6 +153,7 @@ PATH="$HOME/bin${PATH:+:$PATH}"
 declare -x PYENV_ROOT="$HOME/.pyenv"
 [[ ":${PATH}:" == *:$PYENV_ROOT/bin:* ]] || PATH="$PYENV_ROOT/bin${PATH:+:$PATH}"
 eval "$(pyenv init -)"
+pyenv shell $(pyenv versions --bare --skip-aliases | sort | head -1)
 
 # do not include `-pedantic`, it warns casting from (void*) to function pointer
 # export this variable to environ, so as to be used in makefile
