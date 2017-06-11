@@ -12,6 +12,7 @@ $if mode=emacs
 "\C-x1": kill-region
 "\C-x2": set-mark
 "\eD": "\C-x2\eF\C-x1"
+"\eh": backward-kill-word
 # cycle through possible completions
 TAB: menu-complete
 # complete until the end of common prefix before cycling through possible completions
