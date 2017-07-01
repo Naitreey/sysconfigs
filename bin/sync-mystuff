@@ -29,6 +29,14 @@ import sys
 
 from git import Repo, GitCommandError, Actor
 
+def setup_stdout():
+    # re-assign stdout to io object which does not impose 'strict'
+    # encoding error handling. backslashreplace error handler is used
+    # to deal with possible binary data in content display
+    sys.stdout = open(sys.stdout.fileno(),
+                      mode="w",
+                      errors="backslashreplace")
+
 def version_check():
     required = (3, 6, 0)
     if sys.version_info < required:
@@ -54,12 +62,7 @@ def colored_git(func):
     return update_wrapper(wrapper, func)
 
 def print_msg(msg, level=0):
-    indented = indent(msg, prefix="  "*level)
-    # use backslashreplace error handler to deal with
-    # possible binary data in content display
-    encoded = indented.encode("utf-8", "backslashreplace")
-    # write bytes directly to binary stdout stream
-    sys.stdout.buffer.write(encoded)
+    print(indent(msg, prefix="  "*level), end="")
 
 def section(msg):
     print_msg(msg, level=0)
@@ -264,6 +267,7 @@ class MyStuff(Repo):
         self._sync_with_remote_annex()
 
 def main():
+    setup_stdout()
     version_check()
     mystuff = MyStuff()
     if mystuff.bare:
