@@ -54,7 +54,12 @@ def colored_git(func):
     return update_wrapper(wrapper, func)
 
 def print_msg(msg, level=0):
-    print(indent(msg, prefix="  "*level), end="")
+    indented = indent(msg, prefix="  "*level)
+    # use backslashreplace error handler to deal with
+    # possible binary data in content display
+    encoded = indented.encode("utf-8", "backslashreplace")
+    # write bytes directly to binary stdout stream
+    sys.stdout.buffer.write(encoded)
 
 def section(msg):
     print_msg(msg, level=0)
