@@ -109,7 +109,12 @@ export BROWSER=google-chrome
 # add git repo status to ps1
 source ~/.git-prompt.sh
 __jobnums() {
-    declare jobnums=$(jobs -p | wc -l)
+    # exclude autojump background job
+    # XXX this is actually weird: according to its code,
+    #  autojump background job should have dettached from shell
+    # seesion when launched. Thus it shouldn't even show up in jobs
+    # list in the first place !!!
+    declare jobnums=$(jobs -p | jobs -x grep -v %'( autojump'  | wc -l)
     [[ $jobnums -gt 0 ]] && echo -n "$jobnums:"
 }
 
@@ -154,6 +159,8 @@ declare -x PYENV_ROOT="$HOME/.pyenv"
 [[ ":${PATH}:" == *:$PYENV_ROOT/bin:* ]] || PATH="$PYENV_ROOT/bin${PATH:+:$PATH}"
 eval "$(pyenv init -)"
 pyenv shell $(pyenv versions --bare --skip-aliases | sort | head -1)
+# autojump
+[[ -s /home/naitree/.autojump/etc/profile.d/autojump.sh ]] && source /home/naitree/.autojump/etc/profile.d/autojump.sh
 
 # do not include `-pedantic`, it warns casting from (void*) to function pointer
 # export this variable to environ, so as to be used in makefile
