@@ -16,4 +16,5 @@ sysctl.conf: /etc/sysctl.conf
 updatedb.conf: /etc/updatedb.conf
 pre-commit: /usr/share/git-core/templates/hooks/pre-commit
 texmf: ~/texmf
+fcitx: ~/.config/fcitx
 #ipsec.conf: /etc/strongswan/ipsec.conf
