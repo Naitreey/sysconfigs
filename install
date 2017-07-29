@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# vim:fileencoding=utf-8
+
+import os
+from subprocess import run
+from shlex import split
+from glob import iglob
+from pathlib import Path
+from contextlib import contextmanager
+import yaml
+from os.path import abspath, expanduser, isdir, exists, join, basename
+
+def cleanup():
+    run(split("git clean -f -d -x"))
+
+@contextmanager
+def enterdir(dir_):
+    pwd = Path()
+    os.chdir(dir_)
+    try:
+        yield Path()
+    finally:
+        os.chdir(pwd)
+
+def warning(msg):
+    print(f"*** {msg} ***")
+
+def link(target, link_name):
+    if exists(link_name):
+        os.rename(link_name, link_name+".orig")
+        warning("{0} exists, renamed to {0}.orig".format(link_name))
+    os.symlink(target, link_name,
+               target_is_directory=isdir(target))
+
+class Installer:
+
+    def __init__(self, repodir):
+        self._repodir = Path(repodir).resolve()
+        with open(self._repodir/"configs"/"linklist.yaml", "r") as f:
+            self._linkmap = yaml.read(f)
+
+    def install_bin(self):
+        with enterdir(self._repodir/"bin"):
+            # exclude filename starting with `-`
+            for exe in iglob("[!-]*"):
+                link(
+                    abspath(exe),
+                    join(expanduser("~/bin"), basename(exe))
+                )
+
+    def install_configs(self):
+        with enterdir(self._repodir/"configs"):
+            for src, dst in self._linkmap.items():
+                link(abspath(src), dst)
+
+    def config_fonts(self):
+        run(split("fc-cache -f -v"))
+
+    def config_vim(self):
+        link(
+            join(self._linkmap['vim'], "vimrc"),
+            expanduser("~/.vimrc")
+        )
+
+    def run(self):
+        self.install_bin()
+        self.install_configs()
+        self.config_fonts()
+        self.config_vim()
