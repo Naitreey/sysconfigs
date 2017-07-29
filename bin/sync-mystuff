@@ -226,16 +226,29 @@ class MyStuff(Repo):
             subsection(f"Pushing {self.head.ref.name} to {tracking_branch}\n")
             self.remotes[remote_repo].push(f"{self.head.ref.name}:{remote_branch}")
 
+    def _copy_annexed_files(self):
+        subsection("Copying annex-ed files\n")
+        try:
+            check_call(split("git annex copy --to=storage-bup"
+                             " --not --in=storage-bup --jobs=4"),
+                       cwd=self.working_dir)
+        except CalledProcessError:
+            subsection("error in syncing annex-ed files, terminating...\n")
+            sys.exit(1)
+
+    def _sync_annex_status(self):
+        subsection("Syncing git-annex status\n")
+        try:
+            check_call(split("git annex sync"),
+                       cwd=self.working_dir)
+        except CalledProcessError:
+            subsection("error in syncing git-annex status, terminating...\n")
+            sys.exit(1)
+
     def _sync_with_remote_annex(self):
         if self._annex_exists_and_initialized():
-            subsection("Copying annex-ed files\n")
-            try:
-                check_call(split("git annex copy --to=storage-bup"
-                                 " --not --in=storage-bup --jobs=4"),
-                           cwd=self.working_dir)
-            except CalledProcessError:
-                subsection("error in syncing annex-ed files, terminating...\n")
-                sys.exit(1)
+            self._copy_annexed_files()
+            self._sync_annex_status()
 
     def _annex_exists_and_initialized(self):
         try:
