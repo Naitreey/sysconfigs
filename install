@@ -35,7 +35,7 @@ def link(target, link_name):
 
 class Installer:
 
-    def __init__(self, repodir):
+    def __init__(self, repodir=""):
         self._repodir = Path(repodir).resolve()
         with open(self._repodir/"configs"/"linklist.yaml", "r") as f:
             self._linkmap = yaml.read(f)
@@ -68,3 +68,9 @@ class Installer:
         self.install_configs()
         self.config_fonts()
         self.config_vim()
+
+def main():
+    Installer().run()
+
+if __name__ == "__main__":
+    main()
