@@ -19,7 +19,7 @@
 from argparse import ArgumentParser
 from functools import update_wrapper
 from io import StringIO
-from os.path import relpath
+from os.path import relpath, abspath
 from pathlib import Path
 from shlex import split
 from subprocess import check_call, CalledProcessError
@@ -241,7 +241,7 @@ class MyStuff(Repo):
                                cwd=self.working_dir)
                 except CalledProcessError:
                     subsubsection("error in updating submodule urls, terminating...\n")
-                    sys.exit(1)
+                    raise
 
     def _push_local_changes(self, tracking_branch):
         remote_repo, remote_branch = tracking_branch.split("/")
@@ -278,7 +278,7 @@ class MyStuff(Repo):
                        cwd=self.working_dir)
         except CalledProcessError:
             subsection("error in syncing annex-ed files, terminating...\n")
-            sys.exit(1)
+            raise
 
     def _sync_annex_status(self):
         subtitle("Syncing git-annex status")
@@ -287,7 +287,7 @@ class MyStuff(Repo):
                        cwd=self.working_dir)
         except CalledProcessError:
             subsection("error in syncing git-annex status, terminating...\n")
-            sys.exit(1)
+            raise
 
     def _sync_with_remote_annex(self):
         if self._local_annex_exists_and_initialized():
@@ -325,7 +325,7 @@ class MyStuff(Repo):
                            cwd=self.working_dir)
             except CalledProcessError:
                 subsection("error in initializing annex, terminating...\n")
-                sys.exit(1)
+                raise
 
     # ---------- public APIs -----------
 
