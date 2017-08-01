@@ -46,7 +46,8 @@ def version_check():
 
 def parse_args():
     parser = ArgumentParser(description="Mystuff operations.")
-    subparsers = parser.add_subparsers()
+    subparsers = parser.add_subparsers(title="Subcommands",
+                                       dest="subcommand")
     # init operation
     init_parser = subparsers.add_parser("init", help="Initialize mystuff.")
     init_parser.add_argument("-r", "--repository",
@@ -58,8 +59,9 @@ def parse_args():
     # sync operation
     sync_parser = subparsers.add_parser("sync", help="Sync mystuff.")
     init_parser.set_defaults(operation=sync_operation)
-
-    return parser.parse_args()
+    args = parser.parse_args()
+    if not args.subcommand:
+        parser.error("Missing subcommand.")
 
 def colored_git(func):
     """
