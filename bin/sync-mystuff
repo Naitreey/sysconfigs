@@ -16,14 +16,15 @@
 # 对于 remote 是 github 上且不是自己的 repo, 不去保证 up-to-date, 对于自己 repo,
 # 要保证 up-to-date
 
+from argparse import ArgumentParser
 from functools import update_wrapper
 from io import StringIO
 from os.path import relpath
 from pathlib import Path
 from shlex import split
-from textwrap import indent
-from urllib.parse import urlparse
 from subprocess import check_call, CalledProcessError
+from textwrap import indent
+from urllib.parse import urlsplit
 import os
 import sys
 
@@ -63,6 +64,15 @@ def colored_git(func):
 
 def print_msg(msg, level=0):
     print(indent(msg, prefix="  "*level), end="")
+
+def title(line):
+    print_msg(f"*** {line} ***\n", level=0)
+
+def subtitle(line):
+    print_msg(f"*** {line} ***\n", level=1)
+
+def subsubtitle(line):
+    print_msg(f"*** {line} ***\n", level=2)
 
 def section(msg):
     print_msg(msg, level=0)
@@ -129,13 +139,16 @@ class MyStuff(Repo):
             else:
                 raise DirtyWorkingTree(f"{relpath(self.working_dir)}")
 
+    def _remote_is_local(self, url):
+        url_scheme = urlsplit(sm.url).scheme
+        return not url_scheme or url_scheme == "file"
+
     def _is_ignored_submodule(self, sm):
-        url_scheme = urlparse(sm.url).scheme
         # ignore uninitialized module
         if not sm.module_exists():
             return True
         # assume local submodules are mine
-        elif not url_scheme or url_scheme == "file":
+        elif self._remote_is_local(sm.url):
             return False
         # assume remoet submodules with my name in its url are mine
         elif "naitreey" in sm.url.lower():
@@ -177,7 +190,7 @@ class MyStuff(Repo):
             self.remotes[remote_repo].fetch()[tracking_branch]
         # merge remote changes
         if not self.is_ancestor(fetch_info.commit, self.head.commit):
-            subsection(f"Merging {tracking_branch} into {self.head.ref.name}:\n")
+            subtitle(f"Merging {tracking_branch} into {self.head.ref.name}:")
             fast_forward = (self.head.commit ==
                             self.merge_base(self.head.commit, fetch_info.commit)[0])
             try:
@@ -223,11 +236,11 @@ class MyStuff(Repo):
         # git thinks A is ancestor of B even if A == B
         if (self.is_ancestor(remote_commit, head_commit) and
             remote_commit != head_commit):
-            subsection(f"Pushing {self.head.ref.name} to {tracking_branch}\n")
+            subtitle(f"Pushing {self.head.ref.name} to {tracking_branch}")
             self.remotes[remote_repo].push(f"{self.head.ref.name}:{remote_branch}")
 
     def _copy_annexed_files(self):
-        subsection("Copying annex-ed files\n")
+        subtitle("Copying annex-ed files")
         try:
             check_call(split("git annex copy --to=storage-bup"
                              " --not --in=storage-bup --jobs=4"),
@@ -237,7 +250,7 @@ class MyStuff(Repo):
             sys.exit(1)
 
     def _sync_annex_status(self):
-        subsection("Syncing git-annex status\n")
+        subtitle("Syncing git-annex status")
         try:
             check_call(split("git annex sync"),
                        cwd=self.working_dir)
@@ -246,11 +259,11 @@ class MyStuff(Repo):
             sys.exit(1)
 
     def _sync_with_remote_annex(self):
-        if self._annex_exists_and_initialized():
+        if self._local_annex_exists_and_initialized():
             self._copy_annexed_files()
             self._sync_annex_status()
 
-    def _annex_exists_and_initialized(self):
+    def _local_annex_exists_and_initialized(self):
         try:
             return (Path(self.git_dir, "annex").is_dir() and
                     self.branches['git-annex'])
@@ -260,7 +273,7 @@ class MyStuff(Repo):
     # ---------- public APIs -----------
 
     def check_semi_clean(self):
-        section(f"Checking status of {relpath(self.working_dir)}\n")
+        title(f"Checking status of {relpath(self.working_dir)}")
         self._ensure_branch("master")
         self._check_untracked()
         self._check_index()
@@ -273,7 +286,7 @@ class MyStuff(Repo):
     @colored_git
     def sync_with_remote(self):
         self._commit_submodule_changes()
-        section(f"Syncing {relpath(self.working_dir)}\n")
+        title(f"Syncing {relpath(self.working_dir)}")
         tracking_branch = self.head.ref.tracking_branch().name
         self._pull_remote_changes(tracking_branch)
         self._push_local_changes(tracking_branch)
