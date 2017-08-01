@@ -58,10 +58,11 @@ def parse_args():
     init_parser.set_defaults(operation=init_operation)
     # sync operation
     sync_parser = subparsers.add_parser("sync", help="Sync mystuff.")
-    init_parser.set_defaults(operation=sync_operation)
+    sync_parser.set_defaults(operation=sync_operation)
     args = parser.parse_args()
     if not args.subcommand:
         parser.error("Missing subcommand.")
+    return args
 
 def colored_git(func):
     """
@@ -159,17 +160,14 @@ class MyStuff(Repo):
                 raise DirtyWorkingTree(f"{relpath(self.working_dir)}")
 
     def _remote_is_local(self, url):
-        url_scheme = urlsplit(sm.url).scheme
+        url_scheme = urlsplit(url).scheme
         return not url_scheme or url_scheme == "file"
 
     def _is_ignored_submodule(self, sm):
-        # ignore uninitialized module
-        if not sm.module_exists():
-            return True
         # assume local submodules are mine
-        elif self._remote_is_local(sm.url):
+        if self._remote_is_local(sm.url):
             return False
-        # assume remoet submodules with my name in its url are mine
+        # assume remote submodules with my name in its url are mine
         elif "naitreey" in sm.url.lower():
             return False
         # otherwise it's not mine
@@ -277,6 +275,7 @@ class MyStuff(Repo):
         for sm in self.submodules:
             if self._is_ignored_submodule(sm):
                 continue
+            subtitle(f"Updating submodule {sm.name}")
             sm.update(recursive=False, init=True)
             sm_stuff = MyStuff(sm.abspath)
             # if submodule url is local path, rename remote to storage
@@ -331,7 +330,7 @@ class MyStuff(Repo):
         1. git annex sync
         2. git annex enableremote storage-bup
         """
-        if self._remote_annex_exists(self):
+        if self._remote_annex_exists():
             try:
                 check_call(split("git annex sync"),
                            cwd=self.working_dir)
@@ -375,9 +374,9 @@ class MyStuff(Repo):
            ignored ones.
         2. For annexed repo, sync annexed info, enable special remote.
         """
-        title(f"Initializing {relpath(self.workindg_dir)}")
-        self._initialize_submodules()
+        title(f"Initializing {relpath(self.working_dir)}")
         self._initialize_annex()
+        self._initialize_submodules()
 
     @colored_git
     def sync_with_remote(self):
