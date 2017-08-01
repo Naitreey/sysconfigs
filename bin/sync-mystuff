@@ -227,6 +227,16 @@ class MyStuff(Repo):
                         sys.exit(0)
                 except EOFError:
                     sys.exit(0)
+            if self.submodules:
+                # synchronize remote tracking repo url and .git/config url of submodules
+                # to those configured in .gitmodules
+                subsubtitle("Updating submodules urls:")
+                try:
+                    check_call(split("git submodule sync"),
+                               cwd=self.working_dir)
+                except CalledProcessError:
+                    subsubsection("error in updating submodule urls, terminating...\n")
+                    sys.exit(1)
 
     def _push_local_changes(self, tracking_branch):
         remote_repo, remote_branch = tracking_branch.split("/")
