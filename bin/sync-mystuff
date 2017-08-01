@@ -329,6 +329,21 @@ class MyStuff(Repo):
 
     # ---------- public APIs -----------
 
+    @classmethod
+    def clone_repository(cls, repo, path):
+        path = abspath(path)
+        try:
+            check_call(
+                split(
+                    "git clone --no-hardlinks "
+                    "--origin storage {} {}".format(repo, path)
+                )
+            )
+        except CalledProcessError:
+            section("error in cloning mystuff, terminating...\n")
+            raise
+        return MyStuff(path)
+
     def check_semi_clean(self):
         title(f"Checking status of {relpath(self.working_dir)}")
         self._ensure_branch("master")
