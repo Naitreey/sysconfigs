@@ -45,8 +45,20 @@ def version_check():
         sys.exit(1)
 
 def parse_args():
-    parser = ArgumentParser(description="Sync my stuff.")
-    parser.add_argument("-i", "--init", action="store_true")
+    parser = ArgumentParser(description="Mystuff operations.")
+    subparsers = parser.add_subparsers()
+    # init operation
+    init_parser = subparsers.add_parser("init", help="Initialize mystuff.")
+    init_parser.add_argument("-r", "--repository",
+                             required=True,
+                             help="Original mystuff repository.")
+    init_parser.add_argument("directory",
+                             help="Directory where to put mystuff.")
+    init_parser.set_defaults(operation=init_operation)
+    # sync operation
+    sync_parser = subparsers.add_parser("sync", help="Sync mystuff.")
+    init_parser.set_defaults(operation=sync_operation)
+
     return parser.parse_args()
 
 def colored_git(func):
@@ -374,18 +386,22 @@ class MyStuff(Repo):
         self._push_local_changes(tracking_branch)
         self._sync_with_remote_annex()
 
+def init_operation(repository, directory, **kwargs):
+    mystuff = MyStuff.clone_repository(repository, directory)
+    mystuff.initialize()
+
+def sync_operation(**kwargs):
+    mystuff = MyStuff()
+    if mystuff.bare:
+        raise BareRepositoryError
+    mystuff.check_semi_clean()
+    mystuff.sync_with_remote()
+
 def main():
     setup_stdout()
     version_check()
     args = parse_args()
-    mystuff = MyStuff()
-    if mystuff.bare:
-        raise BareRepositoryError
-    if args.init:
-        mystuff.initialize()
-    else:
-        mystuff.check_semi_clean()
-        mystuff.sync_with_remote()
+    args.operation(**args.__dict__)
 
 if __name__ == '__main__':
     main()
