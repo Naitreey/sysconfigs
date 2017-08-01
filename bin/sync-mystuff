@@ -44,6 +44,11 @@ def version_check():
         print("minimal python version required: %r" % required)
         sys.exit(1)
 
+def parse_args():
+    parser = ArgumentParser(description="Sync my stuff.")
+    parser.add_argument("-i", "--init", action="store_true")
+    return parser.parse_args()
+
 def colored_git(func):
     """
     Set ``color.ui == always`` in local context.
@@ -249,6 +254,22 @@ class MyStuff(Repo):
             subtitle(f"Pushing {self.head.ref.name} to {tracking_branch}")
             self.remotes[remote_repo].push(f"{self.head.ref.name}:{remote_branch}")
 
+    def _initialize_submodules(self):
+        """
+        1. git submodule update --init <path>
+        2. git remote rename origin storage (conditionally
+           based on remote url)
+        """
+        for sm in self.submodules:
+            if self._is_ignored_submodule(sm):
+                continue
+            sm.update(recursive=False, init=True)
+            sm_stuff = MyStuff(sm.abspath)
+            # if submodule url is local path, rename remote to storage
+            if self._remote_is_local(sm.url):
+                sm_stuff.remote("origin").rename("storage")
+            sm_stuff.initialize()
+
     def _copy_annexed_files(self):
         subtitle("Copying annex-ed files")
         try:
@@ -280,6 +301,32 @@ class MyStuff(Repo):
         except IndexError:
             return False
 
+    def _remote_annex_exists(self):
+        try:
+            remote = self.remotes['origin']
+        except IndexError:
+            remote = self.remotes['storage']
+        try:
+            remote.refs['git-annex']
+            return True
+        except IndexError:
+            return False
+
+    def _initialize_annex(self):
+        """
+        1. git annex sync
+        2. git annex enableremote storage-bup
+        """
+        if self._remote_annex_exists(self):
+            try:
+                check_call(split("git annex sync"),
+                           cwd=self.working_dir)
+                check_call(split("git annex enableremote storage-bup"),
+                           cwd=self.working_dir)
+            except CalledProcessError:
+                subsection("error in initializing annex, terminating...\n")
+                sys.exit(1)
+
     # ---------- public APIs -----------
 
     def check_semi_clean(self):
@@ -293,6 +340,16 @@ class MyStuff(Repo):
                 continue
             MyStuff(sm.abspath).check_semi_clean()
 
+    def initialize(self):
+        """
+        1. Initialize, update and configure all submodules except for
+           ignored ones.
+        2. For annexed repo, sync annexed info, enable special remote.
+        """
+        title(f"Initializing {relpath(self.workindg_dir)}")
+        self._initialize_submodules()
+        self._initialize_annex()
+
     @colored_git
     def sync_with_remote(self):
         self._commit_submodule_changes()
@@ -305,11 +362,15 @@ class MyStuff(Repo):
 def main():
     setup_stdout()
     version_check()
+    args = parse_args()
     mystuff = MyStuff()
     if mystuff.bare:
         raise BareRepositoryError
-    mystuff.check_semi_clean()
-    mystuff.sync_with_remote()
+    if args.init:
+        mystuff.initialize()
+    else:
+        mystuff.check_semi_clean()
+        mystuff.sync_with_remote()
 
 if __name__ == '__main__':
     main()
