@@ -20,6 +20,8 @@ boldify() {
 }
 
 #--- verify commit author and email ---
+def_author="Naitree Zhu"
+def_email="naitreey@gmail.com"
 author=
 email=
 git_author=$GIT_AUTHOR_NAME
@@ -37,8 +39,10 @@ $(boldify $(redify "Specify *expected* author and email for commit checking."))
 EOF
     exec 0</dev/tty
     echo
-    read -e -p "Author: " author
-    read -e -p "Email: " email
+    read -e -p "Author ($def_author): " author
+    [[ -z "$author" ]] && author="$def_author"
+    read -e -p "Email ($def_email): " email
+    [[ -z "$email" ]] && email="$def_email"
     echo
     exec <&-
     script=$0
