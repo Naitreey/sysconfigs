@@ -1,4 +1,4 @@
-#!/bin/env python3
+#!/usr/bin/env python3
 #
 # 首先保证所有修改和最底层的 submodule 的修改已经提交.
 # 对于 modified working tree, 若不是 submodule, 则报错退出, 若是 submodule 则进入处理.
