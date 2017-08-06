@@ -10,9 +10,14 @@ from pathlib import Path
 from contextlib import contextmanager
 import yaml
 from os.path import abspath, expanduser, isdir, exists, join, basename
+import re
+from colorama import Fore
 
-def cleanup():
-    run(split("git clean -f -d -x"))
+DISTROS = ["ubuntu", "fedora", "arch"]
+
+PKG_CMD = {
+    "arch": []
+}
 
 @contextmanager
 def enterdir(dir_):
@@ -23,51 +28,169 @@ def enterdir(dir_):
     finally:
         os.chdir(pwd)
 
-def warning(msg):
-    print(f"*** {msg} ***")
+def info(msg):
+    print(Fore.GREEN + f"*** {msg} ***" + Fore.RESET)
 
-def link(target, link_name):
-    if exists(link_name):
-        os.rename(link_name, link_name+".orig")
-        warning("{0} exists, renamed to {0}.orig".format(link_name))
-    os.symlink(target, link_name,
-               target_is_directory=isdir(target))
+def warning(msg):
+    print(Fore.YELLOW + f"*** {msg} ***" + Fore.RESET)
+
+def current_distro():
+    distro_regex = re.compile(r"(%s)" % "|".join(DISTROS))
+    with open("/etc/os-release", "r") as f:
+        release_info = f.read().lower()
+    match = distro_regex.search(release_info)
+    if not match:
+        raise UnknownDistro("The current linux distribution"
+                            " cannot be recognized")
+    return match.group(1)
+
+class InstallError(Exception):
+    pass
+
+class UnknownDistro(InstallError):
+    pass
+
+class DistroNotSupported(InstallError):
+    pass
+
+class FormatError(InstallError):
+    pass
+
+class ConfigModule:
+
+    pkgsfmt     = "packages.d/packages-{distro}.yaml"
+    filesfmt    = "packages.d/files-{distro}.yaml"
+    prehookfmt  = "hooks.d/preinstall-{distro}"
+    posthookfmt = "hooks.d/postinstall-{distro}"
+    sourcedir   = "files.d/source"
+
+    def __init__(self, path, distro=current_distro()):
+		self._distro = distro
+        self._modulepath = Path(path).resolve(strict=True)
+        self._pkgs = self._load_check_pkgs()
+        self._files = self._load_check_files()
+        self._prehook = self._load_check_prehook()
+        self._posthook = self._load_check_posthook()
+
+    def _load_check_pkgs(self):
+        pkgsfile = self.pkgsfmt.format(distro=self._distro)
+        if not exists(pkgsfile):
+            pkgsfile = self.pkgsfmt.format(distro="any")
+            if not exists(pkgsfile):
+                return []
+        with open(pkgsfile, "r") as f:
+            packages = yaml.load(f)
+        try:
+            for p in packages:
+                assert isinstance(p, str)
+        except Exception as e:
+            raise FormatError(f"invalid format of {pkgsfile}") from e
+        else:
+            return packages
+
+    def _load_check_files(self):
+        filesfile = self.filesfmt.format(distro=self._distro)
+        if not exists(filesfile):
+            filesfile = self.filesfmt.format(distro="any")
+            if not exists(filesfile):
+                return []
+        with open(filesfile, "r") as f:
+            files = yaml.load(f)
+        try:
+            for config in files:
+                assert isinstance(config['source'], str)
+                assert isinstance(config['target'], str)
+                assert isinstance(config.get("copy", False), bool)
+        except Exception as e:
+            raise FormatError(f"invalid format of {filesfile}") from e
+        else:
+            return files
+
+    def _load_check_prehook(self):
+        prehook = self.prehookfmt.format(distro=self._distro)
+        if not exists(prehook):
+            prehook = self.prehookfmt.format(distro="any")
+            if not exists(prehook):
+                return None
+        return prehook
+
+    def _load_check_posthook(self):
+        posthook = self.posthookfmt.format(distro=self._distro)
+        if not exists(posthook):
+            posthook = self.posthookfmt.format(distro="any")
+            if not exists(posthook):
+                return None
+        return posthook
+
+    def _get_backup_name(self, filepath):
+        get_index = lambda fn: int(Path(fn).suffix[1:])
+        backup_indices = sorted(get_index(p) for p in iglob(filepath+".orig.*"))
+        if not backup_indices:
+            next_index = 1
+        else:
+            next_index = backup_indices[-1] + 1
+        return filepath + ".orig.%d" % next_index
+
+    def _link(self, target, link_name):
+        if exists(link_name):
+            backup_name = self._get_backup_name(link_name)
+            warning("{0} exists, renamed to {1}".format(
+                link_name, backup_name
+            ))
+            os.rename(link_name, backup_name)
+        os.symlink(target, link_name,
+                   target_is_directory=isdir(target))
+
+    def _copy(self, target, source):
+        raise NotImplementedError
+
+    def run_prehook(self):
+        info("Running pre-installation hook")
+        if self._prehook:
+            run([self._prehook], check=True)
+
+    def install_packages(self):
+        info("Installing packages")
+        if self._pkgs:
+            run(PKG_CMD[self._distro][1] + self._pkgs, check=True)
+
+    def install_configs(self):
+        info("Installing configurations")
+        for config in self._files:
+
+
+    def install(self):
+        raise NotImplementedError
 
 class Installer:
 
-    def __init__(self, repodir=""):
-        self._repodir = Path(repodir).resolve()
-        with open(self._repodir/"configs"/"linklist.yaml", "r") as f:
-            self._linkmap = yaml.read(f)
+    def __init__(self):
+        self._distro = current_distro()
+        self._modulesdir = (Path()/"modules.d").resolve(strict=True)
 
-    def install_bin(self):
-        with enterdir(self._repodir/"bin"):
-            # exclude filename starting with `-`
-            for exe in iglob("[!-]*"):
-                link(
-                    abspath(exe),
-                    join(expanduser("~/bin"), basename(exe))
-                )
+    def check_support(self):
+        distro = self._distro
+        if distro == "ubuntu" or distro == "fedora":
+            raise DistroNotSupported(f"Support for {distro} coming soon")
 
-    def install_configs(self):
-        with enterdir(self._repodir/"configs"):
-            for src, dst in self._linkmap.items():
-                link(abspath(src), dst)
+    def install_all_modules(self):
+        for path in sorted(self._modulesdir.glob("[0-9][0-9][0-9][0-9]?*")):
+            info(f"installing {path.name}")
+            with enterdir(path):
+                module = ConfigModule(path, distro=self._distro)
+                module.install()
 
-    def config_fonts(self):
-        run(split("fc-cache -f -v"))
+    def cleanup(self):
+        run(split("git clean -f -d -x"), check=True)
 
-    def config_vim(self):
-        link(
-            join(self._linkmap['vim'], "vimrc"),
-            expanduser("~/.vimrc")
-        )
+    def refresh_pkg_cache(self):
+        run(PKG_CMD[self._distro][0], check=True)
 
     def run(self):
-        self.install_bin()
-        self.install_configs()
-        self.config_fonts()
-        self.config_vim()
+        self.check_support()
+        self.cleanup()
+        self.refresh_pkg_cache()
+        self.install_all_modules()
 
 def main():
     Installer().run()
