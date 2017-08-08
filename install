@@ -8,6 +8,7 @@ from shlex import split
 from glob import iglob
 from pathlib import Path
 from contextlib import contextmanager
+from shutil import copytree, copy
 import yaml
 from os.path import abspath, expanduser, isdir, exists, join, basename
 import re
@@ -16,7 +17,11 @@ from colorama import Fore
 DISTROS = ["ubuntu", "fedora", "arch"]
 
 PKG_CMD = {
-    "arch": []
+    # 0 - command to update package database
+    # 1 - command to install package
+    "arch": [
+        split("pacman -Syy"), split("pacman -S")
+    ],
 }
 
 @contextmanager
@@ -131,23 +136,35 @@ class ConfigModule:
             next_index = backup_indices[-1] + 1
         return filepath + ".orig.%d" % next_index
 
-    def _link(self, target, link_name):
-        if exists(link_name):
-            backup_name = self._get_backup_name(link_name)
+    def _rename_if_exists(self, file):
+        if exists(file):
+            backup_name = self._get_backup_name(file)
             warning("{0} exists, renamed to {1}".format(
-                link_name, backup_name
+                file, backup_name
             ))
-            os.rename(link_name, backup_name)
-        os.symlink(target, link_name,
+            os.rename(file, backup_name)
+
+    def _link(self, target, link_name):
+        self._rename_if_exists(link_name)
+        os.symlink(abspath(target), link_name,
                    target_is_directory=isdir(target))
 
-    def _copy(self, target, source):
-        raise NotImplementedError
+    def _copy(self, source, target):
+        self._rename_if_exists(target)
+        if isdir(source):
+            copytree(source, target)
+        else:
+            copy(source, target)
 
     def run_prehook(self):
         info("Running pre-installation hook")
         if self._prehook:
             run([self._prehook], check=True)
+
+    def run_posthook(self):
+        info("Running post-installation hook")
+        if self._posthook:
+            run([self._posthook], check=True)
 
     def install_packages(self):
         info("Installing packages")
@@ -157,10 +174,22 @@ class ConfigModule:
     def install_configs(self):
         info("Installing configurations")
         for config in self._files:
-
+            if config.get("copy", False):
+                self._copy(
+                    join(self.sourcedir, config['source']),
+                    config['target']
+                )
+            else:
+                self._link(
+                    join(self.sourcedir, config['source']),
+                    config['target']
+                )
 
     def install(self):
-        raise NotImplementedError
+        self.run_prehook()
+        self.install_packages()
+        self.install_configs()
+        self.run_posthook()
 
 class Installer:
 
