@@ -70,7 +70,7 @@ class ConfigModule:
     sourcedir   = "files.d/source"
 
     def __init__(self, path, distro=current_distro()):
-		self._distro = distro
+        self._distro = distro
         self._modulepath = Path(path).resolve(strict=True)
         self._pkgs = self._load_check_pkgs()
         self._files = self._load_check_files()
