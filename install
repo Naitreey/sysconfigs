@@ -242,15 +242,17 @@ class Installer:
 
 def parse_args():
     parser = ArgumentParser(description="Configuration module installer.")
-    parser.add_argument("module",
+    mutex_group = parser.add_mutually_exclusive_group()
+    mutex_group.add_argument("module",
                         nargs="?",
                         help="module to be installed")
-    parser.add_argument("--list", "-l",
+    mutex_group.add_argument("--list", "-l",
                         action="store_true",
                         help="list available modules")
+    mutex_group.add_argument("--start-at", "-t",
+                        metavar="MODULE",
+                        help="install modules starting at MODULE.")
     args = parser.parse_args()
-    if args.module is not None and args.list:
-        parser.error("--list does not allow argument.")
     return args
 
 def main():
