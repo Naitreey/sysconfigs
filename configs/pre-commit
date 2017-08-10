@@ -62,7 +62,9 @@ EOF
 fi
 
 #--- automatically configured by git-annex ---
-git annex pre-commit .
+if [[ -d .git/annex ]]; then
+    git annex pre-commit .
+fi
 
 #--- all passed ---
 exit $SUCCESS
