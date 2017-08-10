@@ -20,7 +20,7 @@ PKG_CMD = {
     # 0 - command to update package database
     # 1 - command to install package
     "arch": [
-        split("pacman -Syy"), split("pacman -S")
+        split("sudo pacman -Syy"), split("sudo pacman -S")
     ],
 }
 
@@ -64,13 +64,13 @@ class FormatError(InstallError):
 class ConfigModule:
 
     pkgsfmt     = "packages.d/packages-{distro}.yaml"
-    filesfmt    = "packages.d/files-{distro}.yaml"
+    filesfmt    = "files.d/files-{distro}.yaml"
+    sourcedir   = "files.d/source"
     prehookfmt  = "hooks.d/preinstall-{distro}"
     posthookfmt = "hooks.d/postinstall-{distro}"
-    sourcedir   = "files.d/source"
 
     def __init__(self, path, distro=current_distro()):
-		self._distro = distro
+        self._distro = distro
         self._modulepath = Path(path).resolve(strict=True)
         self._pkgs = self._load_check_pkgs()
         self._files = self._load_check_files()
@@ -174,15 +174,17 @@ class ConfigModule:
     def install_configs(self):
         info("Installing configurations")
         for config in self._files:
+            source, target = config['source'], config['target']
+            print(f"{source} --> {target}")
             if config.get("copy", False):
                 self._copy(
-                    join(self.sourcedir, config['source']),
-                    config['target']
+                    join(self.sourcedir, source),
+                    target
                 )
             else:
                 self._link(
-                    join(self.sourcedir, config['source']),
-                    config['target']
+                    join(self.sourcedir, source),
+                    target
                 )
 
     def install(self):
