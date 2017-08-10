@@ -62,7 +62,7 @@ EOF
 fi
 
 #--- automatically configured by git-annex ---
-if [[ -d .git/annex ]]; then
+if [[ -d $GIT_DIR/annex ]]; then
     git annex pre-commit .
 fi
 
