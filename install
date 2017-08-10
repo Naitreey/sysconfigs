@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # vim:fileencoding=utf-8
 
+import sys
 import os
 from subprocess import run
 from shlex import split
@@ -13,6 +14,7 @@ import yaml
 from os.path import abspath, expanduser, isdir, exists, join, basename
 import re
 from colorama import Fore
+from argparse import ArgumentParser
 
 DISTROS = ["ubuntu", "fedora", "arch"]
 
@@ -38,6 +40,9 @@ def info(msg):
 
 def warning(msg):
     print(Fore.YELLOW + f"*** {msg} ***" + Fore.RESET)
+
+def error(msg):
+    print(Fore.RED + f"*** {msg} ***" + Fore.RESET)
 
 def current_distro():
     distro_regex = re.compile(r"(%s)" % "|".join(DISTROS))
@@ -204,12 +209,15 @@ class Installer:
         if distro == "ubuntu" or distro == "fedora":
             raise DistroNotSupported(f"Support for {distro} coming soon")
 
+    def install_one_module(self, path):
+        info(f"installing {path.name}")
+        with enterdir(path):
+            module = ConfigModule(path, distro=self._distro)
+            module.install()
+
     def install_all_modules(self):
         for path in sorted(self._modulesdir.glob("[0-9][0-9][0-9][0-9]?*")):
-            info(f"installing {path.name}")
-            with enterdir(path):
-                module = ConfigModule(path, distro=self._distro)
-                module.install()
+            self.install_one_module(path)
 
     def cleanup(self):
         run(split("git clean -f -d -x"), check=True)
@@ -217,14 +225,29 @@ class Installer:
     def refresh_pkg_cache(self):
         run(PKG_CMD[self._distro][0], check=True)
 
-    def run(self):
+    def run(self, module=None, list=False):
         self.check_support()
         self.cleanup()
         self.refresh_pkg_cache()
         self.install_all_modules()
 
+def parse_args():
+    parser = ArgumentParser(description="Configuration module installer.")
+    parser.add_argument("module",
+                        nargs="?",
+                        help="module to be installed")
+    parser.add_argument("--list", "-l",
+                        action="store_true",
+                        help="list available modules")
+    args = parser.parse_args()
+    if args.module is not None and args.list:
+        parser.error("--list does not allow argument.")
+    return args
+
 def main():
-    Installer().run()
+    args = parse_args()
+    Installer().run(module=args.module,
+                    list=args.list)
 
 if __name__ == "__main__":
     main()
