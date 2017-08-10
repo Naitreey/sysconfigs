@@ -216,7 +216,7 @@ class Installer:
             module.install()
 
     def install_all_modules(self):
-        for path in sorted(self._modulesdir.glob("[0-9][0-9][0-9][0-9]?*")):
+        for path in self.iter_module_paths():
             self.install_one_module(path)
 
     def cleanup(self):
@@ -225,11 +225,20 @@ class Installer:
     def refresh_pkg_cache(self):
         run(PKG_CMD[self._distro][0], check=True)
 
+    def iter_module_paths(self):
+        return sorted(self._modulesdir.glob("[0-9][0-9][0-9][0-9]?*"))
+
     def run(self, module=None, list=False):
+        if list:
+            print("\n".join(p.name for p in self.iter_module_paths()))
+            return
         self.check_support()
         self.cleanup()
         self.refresh_pkg_cache()
-        self.install_all_modules()
+        if not module:
+            self.install_all_modules()
+        else:
+            self.install_one_module(self._modulesdir/module)
 
 def parse_args():
     parser = ArgumentParser(description="Configuration module installer.")
