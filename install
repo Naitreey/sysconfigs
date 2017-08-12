@@ -267,9 +267,6 @@ class Installer:
         for path in self.iter_module_paths(start_at):
             self.install_one_module(path)
 
-    def cleanup(self):
-        run(split("git clean -f -d -x"), check=True)
-
     def get_annex_files(self):
         run(split("git annex get --all"), check=True)
 
