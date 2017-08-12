@@ -255,10 +255,13 @@ class Installer:
             raise DistroNotSupported(f"Support for {distro} coming soon")
 
     def install_one_module(self, path):
-        info(f"installing {path.name}")
-        with enterdir(path):
-            module = ConfigModule(path, distro=self._distro)
-            module.install()
+        if isfile(path/"disabled"):
+            warning(f"ignoring disabled module {path.name}")
+        else:
+            info(f"installing {path.name}")
+            with enterdir(path):
+                module = ConfigModule(path, distro=self._distro)
+                module.install()
 
     def install_all_modules(self, start_at=None):
         for path in self.iter_module_paths(start_at):
