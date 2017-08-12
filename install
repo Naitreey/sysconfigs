@@ -117,9 +117,9 @@ class ConfigModule:
 
     def _load_check_pkgs(self):
         pkgsfile = self.pkgsfmt.format(distro=self._distro)
-        if not exists(pkgsfile):
+        if not lexists(pkgsfile):
             pkgsfile = self.pkgsfmt.format(distro="any")
-            if not exists(pkgsfile):
+            if not lexists(pkgsfile):
                 return []
         with open(pkgsfile, "r") as f:
             packages = yaml.load(f)
@@ -133,9 +133,9 @@ class ConfigModule:
 
     def _load_check_files(self):
         filesfile = self.filesfmt.format(distro=self._distro)
-        if not exists(filesfile):
+        if not lexists(filesfile):
             filesfile = self.filesfmt.format(distro="any")
-            if not exists(filesfile):
+            if not lexists(filesfile):
                 return []
         with open(filesfile, "r") as f:
             files = yaml.load(f)
@@ -151,17 +151,17 @@ class ConfigModule:
 
     def _load_check_prehook(self):
         prehook = self.prehookfmt.format(distro=self._distro)
-        if not exists(prehook):
+        if not lexists(prehook):
             prehook = self.prehookfmt.format(distro="any")
-            if not exists(prehook):
+            if not lexists(prehook):
                 return None
         return prehook
 
     def _load_check_posthook(self):
         posthook = self.posthookfmt.format(distro=self._distro)
-        if not exists(posthook):
+        if not lexists(posthook):
             posthook = self.posthookfmt.format(distro="any")
-            if not exists(posthook):
+            if not lexists(posthook):
                 return None
         return posthook
 
@@ -175,7 +175,7 @@ class ConfigModule:
         return filepath + ".orig.%d" % next_index
 
     def _rename_if_exists(self, file):
-        if exists(file):
+        if lexists(file):
             backup_name = self._get_backup_name(file)
             warning("{0} exists, renamed to {1}".format(
                 file, backup_name
