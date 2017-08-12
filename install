@@ -283,31 +283,37 @@ class Installer:
                 sorted(self._modulesdir.glob("[0-9][0-9][0-9][0-9]?*"))
             )
 
-    def run(self, module=None, start_at=None, list=False):
+    def list_modules(self):
+        print("\n".join(p.name for p in self.iter_module_paths()))
+
+    def run(self, module=None, start_at=None, list=False, refresh=True):
         if list:
-            print("\n".join(p.name for p in self.iter_module_paths()))
-            return
-        self.check_support()
-        self.cleanup()
-        self.get_annex_files()
-        self.refresh_pkg_cache()
-        if not module:
-            self.install_all_modules(start_at)
+            self.list_modules()
         else:
-            self.install_one_module(self._modulesdir/module)
+            self.get_annex_files()
+            if refresh:
+                self.refresh_pkg_cache()
+            if not module:
+                self.install_all_modules(start_at)
+            else:
+                self.install_one_module(self._modulesdir/module)
 
 def parse_args():
     parser = ArgumentParser(description="Configuration module installer.")
     mutex_group = parser.add_mutually_exclusive_group()
     mutex_group.add_argument("module",
-                        nargs="?",
-                        help="module to be installed")
+                             nargs="?",
+                             help="module to be installed")
     mutex_group.add_argument("--list", "-l",
-                        action="store_true",
-                        help="list available modules")
+                             action="store_true",
+                             help="list available modules")
     mutex_group.add_argument("--start-at", "-t",
-                        metavar="MODULE",
-                        help="install modules starting at MODULE.")
+                             metavar="MODULE",
+                             help="install modules starting at MODULE.")
+    parser.add_argument("--no-refresh", "-f",
+                        dest="refresh",
+                        action="store_false",
+                        help="do not refresh package manager database.")
     args = parser.parse_args()
     return args
 
