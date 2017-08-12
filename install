@@ -247,10 +247,11 @@ class Installer:
     def __init__(self):
         self._distro = current_distro()
         self._modulesdir = (Path()/"modules.d").resolve(strict=True)
+        self.check_support()
 
     def check_support(self):
         distro = self._distro
-        if distro == "ubuntu" or distro == "fedora":
+        if distro == "ubuntu":
             raise DistroNotSupported(f"Support for {distro} coming soon")
 
     def install_one_module(self, path):
