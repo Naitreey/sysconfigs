@@ -1,0 +1,2 @@
+- source: ghci
+  target: ~/.ghci
