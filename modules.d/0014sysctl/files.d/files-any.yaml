@@ -1,0 +1,4 @@
+- source: sysrq.conf
+  target: /etc/sysctl.d/10-sysrq.conf
+  copy: true
+  asroot: true

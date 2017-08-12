@@ -1,0 +1,2 @@
+- source: texmf
+  target: ~/texmf

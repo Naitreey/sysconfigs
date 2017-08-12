@@ -1,0 +1,2 @@
+- source: mystuff
+  target: ~/bin/mystuff

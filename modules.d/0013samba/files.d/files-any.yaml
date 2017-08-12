@@ -1,0 +1,4 @@
+- source: smb.conf
+  target: /etc/samba/smb.conf
+  copy: true
+  asroot: true

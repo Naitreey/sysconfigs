@@ -1,0 +1,2 @@
+#!/bin/bash -e
+chmod go-w $(readlink -e "$(dirname $(readlink -e "$0"))/../files.d/source")
