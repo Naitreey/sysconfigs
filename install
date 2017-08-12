@@ -32,7 +32,10 @@ PKG_CMD = {
     # 0 - command to update package database
     # 1 - command to install package
     "arch": [
-        split("sudo pacman -Syy"), split("sudo pacman -S")
+        "sudo pacman -Syy ", "sudo pacman -S --noconfirm ",
+    ],
+    "fedora": [
+        "sudo dnf check-update || true ", "sudo dnf install -y ",
     ],
 }
 
@@ -184,7 +187,8 @@ class ConfigModule:
     def install_packages(self):
         info("Installing packages")
         if self._pkgs:
-            run(PKG_CMD[self._distro][1] + self._pkgs, check=True)
+            run(PKG_CMD[self._distro][1] + " ".join(self._pkgs),
+                shell=True, check=True)
 
     def install_configs(self):
         info("Installing configurations")
@@ -236,7 +240,7 @@ class Installer:
         run(split("git annex get --all"), check=True)
 
     def refresh_pkg_cache(self):
-        run(PKG_CMD[self._distro][0], check=True)
+        run(PKG_CMD[self._distro][0], shell=True, check=True)
 
     def iter_module_paths(self, start_at=None):
         if not start_at:
