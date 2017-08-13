@@ -1,0 +1,3 @@
+#!/bin/bash -e
+cd $(readlink -e $0/../files.d/source)
+./settings.sh load
