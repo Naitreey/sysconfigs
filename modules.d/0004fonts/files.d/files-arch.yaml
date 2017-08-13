@@ -1,0 +1,6 @@
+- source: fonts
+  target: ~/.fonts
+- source: local.conf
+  target: /etc/fonts/local.conf
+  copy: true
+  asroot: true
