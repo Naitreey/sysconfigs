@@ -1,0 +1,14 @@
+#!/bin/bash -e
+
+# disable embedded bitmap for all fonts, enable sub-pixel RGB rendering,
+# and enable the LCD filter which is designed to reduce colour fringing
+# when subpixel rendering is used
+sudo ln -sf /etc/fonts/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d
+sudo ln -sf /etc/fonts/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d
+sudo ln -sf /etc/fonts/conf.avail/11-lcdfilter-default.conf /etc/fonts/conf.d
+
+# enable FreeType subpixel hinting mode by editing
+sudo sed -i -e 's/^#export FREETYPE_PROPERTIES/export FREETYPE_PROPERTIES/' /etc/profile.d/freetype2.sh
+
+# refresh cache
+fc-cache -f -v
