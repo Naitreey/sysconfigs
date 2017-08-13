@@ -1,4 +1,0 @@
-- source: updatedb.conf
-  target: /etc/updatedb.conf
-  copy: true
-  asroot: true
