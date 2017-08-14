@@ -1,0 +1,4 @@
+- source: ipsec.conf
+  target: /etc/strongswan/ipsec.conf
+  copy: true
+  asroot: true

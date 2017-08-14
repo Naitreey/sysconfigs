@@ -1,3 +1,6 @@
 [submodule "vim"]
-	path = configs/vim
+	path = modules.d/0017vim/files.d/source/vim
 	url = /run/media/naitree/9d2b094e-cbc6-48d2-aeb3-1f513dfaaf03/storage/vim.git
+[submodule "modules.d/0026pyenv/files.d/source/pyenv"]
+	path = modules.d/0026pyenv/files.d/source/pyenv
+	url = https://github.com/yyuu/pyenv.git

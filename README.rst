@@ -17,7 +17,9 @@ Module structure
 - ``files.d/files-<distro>.yaml``
 
   a list of files to installed to system. Files are by default symlinked to
-  its target, unless otherwise defined by ``copy`` option. File format::
+  its target, unless otherwise defined by ``copy`` option. If ``asroot`` is
+  ``true``, the particular link/copy will be done as root, suitable for modifying
+  system level configurations. File format::
 
     - source: relpath/to/source1
       target: abspath/to/target1
@@ -25,6 +27,7 @@ Module structure
     - source: relpath/to/source2
       target: abspath/to/target2
       copy: false
+      asroot: true
     ...
 
   If ``target`` already exists, original file will be renamed to ``target.orig.<N>``
