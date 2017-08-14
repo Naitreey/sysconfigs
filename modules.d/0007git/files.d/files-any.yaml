@@ -1,0 +1,13 @@
+- source: git-prompt.sh
+  target: ~/.git-prompt.sh
+- source: gitconfig
+  target: ~/.gitconfig
+- source: gitignore
+  target: ~/.gitignore
+- source: pre-commit
+  target: /usr/share/git-core/templates/hooks/pre-commit
+  asroot: true
+  # need copy, or git init simply replicates the original
+  # symlink to .git/hooks. makes per-repo hook customization
+  # impossible
+  copy: true

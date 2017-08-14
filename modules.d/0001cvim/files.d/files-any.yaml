@@ -1,0 +1,4 @@
+- source: cvim_server.py
+  target: ~/bin/cvim_server.py
+- source: cvimrc
+  target: ~/.cvimrc

@@ -1,0 +1,2 @@
+- source: ziroom-monitor.py
+  target: ~/bin/ziroom-monitor.py

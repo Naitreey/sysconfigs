@@ -1,0 +1,4 @@
+- source: foxit-annotate
+  target: ~/bin/foxit-annotate
+- source: strip-annotations.sh
+  target: ~/bin/strip-annotations.sh

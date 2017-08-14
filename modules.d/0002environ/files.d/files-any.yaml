@@ -1,0 +1,4 @@
+- source: environment
+  target: /etc/environment
+  asroot: true
+  copy: true

@@ -1,5 +1,0 @@
-- source: abc
-  target: /tmp/abc
-- source: abc
-  target: /tmp/def
-  copy: true
