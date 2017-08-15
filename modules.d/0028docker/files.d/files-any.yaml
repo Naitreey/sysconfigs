@@ -1,0 +1,4 @@
+- source: http-proxy.conf
+  target: /etc/systemd/system/docker.service.d/http-proxy.conf
+  copy: true
+  asroot: true
