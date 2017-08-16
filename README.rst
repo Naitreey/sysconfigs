@@ -53,11 +53,11 @@ as defined by ``NNNN<module-name>``.
 During installation of each module, the followings are performed
 in order.
 
-# ``hooks.d/preinstall-<distro>`` is executed if exists.
+1. ``hooks.d/preinstall-<distro>`` is executed if exists.
 
-# Packages listed in ``packages.d/files-<distro>.yaml`` are installed.
+2. Packages listed in ``packages.d/files-<distro>.yaml`` are installed.
 
-# Configuration and other files listed in ``files.d/files-<distro>.yaml``
-  are linked/copied.
+3. Configuration and other files listed in ``files.d/files-<distro>.yaml``
+   are linked/copied.
 
-# ``hooks.d/postinstall-<distro>`` is executed if exists.
+4. ``hooks.d/postinstall-<distro>`` is executed if exists.
