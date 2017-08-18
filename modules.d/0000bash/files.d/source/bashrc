@@ -203,21 +203,10 @@ MATERIALS_READ=~/mystuff/profession/materials_read
 GOALS=~/mystuff/goals
 NOTES=~/mystuff/profession/notes-and-knowledge
 CAREER=~/mystuff/career
-if [[ "$HOSTNAME" == workstation ]]; then
-    WEEKLYREPORT=~/Desktop/weekly_report/weekly_report.tex
-    SECRECY=~/Desktop/secrecy
-    NG8W=$SECRECY/ng8w-project
+if [[ "$HOSTNAME" == *workstation ]]; then
+    WORK=~/Desktop/devops
 fi
 STORAGE=/run/media/naitree/9d2b094e-cbc6-48d2-aeb3-1f513dfaaf03
-
-special-routes() {
-    sudo ip route replace 10.0.0.111/32 via 192.168.18.2 dev eno1 proto static metric 0
-    sudo ip route replace 10.255.0.10/32 via 192.168.18.2 dev eno1 proto static metric 0
-    sudo ip route replace 10.255.52.111/32 via 192.168.18.2 dev eno1 proto static metric 0
-    sudo ip route replace 10.255.52.112/32 via 192.168.18.2 dev eno1 proto static metric 0
-    sudo ip route replace 10.255.49.65/32 via 192.168.18.2 dev eno1 proto static metric 0
-    sudo ip route replace 192.168.16.0/24 via 192.168.18.2 dev eno1 proto static metric 0
-}
 
 backup-home() {
     sudo rsync -avu --delete --exclude='.cache' --exclude='vm/*.qcow2' --exclude='Desktop/try' --exclude='.mozilla' /home/naitree/ naitree@workstation
