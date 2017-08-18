@@ -32,11 +32,17 @@ PKG_CMD = {
     # 0 - command to update package database
     # 1 - command to install package
     "arch": [
-        "sudo pacman -Syy ", "sudo pacman -S --noconfirm ",
+        "sudo pacman -Syy ",
+        "sudo pacman -S --noconfirm ",
     ],
     "fedora": [
-        "sudo dnf check-update || true ", "sudo dnf install -y ",
+        "sudo dnf check-update || true ",
+        "sudo dnf install -y ",
     ],
+    "ubuntu": [
+        "sudo apt-get update ",
+        "sudo apt-get install -y ",
+    ]
 }
 
 @contextmanager
@@ -249,9 +255,7 @@ class Installer:
         self.check_support()
 
     def check_support(self):
-        distro = self._distro
-        if distro == "ubuntu":
-            raise DistroNotSupported(f"Support for {distro} coming soon")
+        pass
 
     def install_one_module(self, path):
         if isfile(path/"disabled"):
