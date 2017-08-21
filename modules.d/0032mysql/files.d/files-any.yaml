@@ -1,0 +1,6 @@
+- source: my.cnf
+  target: ~/.my.cnf
+- source: local.cnf
+  target: /etc/mysql/conf.d/local.cnf
+  asroot: true
+  copy: true
