@@ -41,6 +41,13 @@ fi
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 export LINES COLUMNS
+# control less(1) behaviors
+# -X leaves file contents on the screen when less exits.
+# -F makes less quit if the entire output can be displayed on one screen.
+# -R displays ANSI color escape sequences in "raw" form.
+# -S disables line wrapping. Side-scroll to see long lines.
+# -i enables case-insensitive search.
+export LESS='-iXFR'
 
 alias ll='ls -alF'
 alias la='ls -A'
