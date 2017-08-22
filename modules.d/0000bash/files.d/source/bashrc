@@ -100,6 +100,8 @@ shopt -s hostcomplete
 shopt -s interactive_comments
 # do not tab-complete on an empty line
 shopt -s no_empty_cmd_completion
+# subshell inherits `-e` option if set
+shopt -s inherit_errexit
 # exit status of pipeline should reflect the failing commands
 set -o pipefail
 # default editor, viewer and browser
