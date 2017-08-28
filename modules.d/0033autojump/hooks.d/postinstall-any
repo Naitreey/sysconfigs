@@ -1,0 +1,4 @@
+#!/bin/bash -e
+base_dir=$(dirname "$(readlink -e "$0")")
+cd "$base_dir"/../files.d/source/autojump
+./install.py

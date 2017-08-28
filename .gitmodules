@@ -4,3 +4,6 @@
 [submodule "modules.d/0026pyenv/files.d/source/pyenv"]
 	path = modules.d/0026pyenv/files.d/source/pyenv
 	url = https://github.com/yyuu/pyenv.git
+[submodule "modules.d/0033autojump/files.d/source/autojump"]
+	path = modules.d/0033autojump/files.d/source/autojump
+	url = https://github.com/wting/autojump.git
