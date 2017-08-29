@@ -42,6 +42,23 @@ Module structure
   scripts to be executed before/after configuration module installation.
   The scripts must be executable.
 
+Install modules
+---------------
+::
+    usage: install [-h] [--list] [--start-at MODULE] [--no-refresh] [module]
+
+    Configuration module installer.
+
+    positional arguments:
+      module                module to be installed
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      --list, -l            list available modules
+      --start-at MODULE, -t MODULE
+                            install modules starting at MODULE.
+      --no-refresh, -f      do not refresh package manager database.
+
 Operation logic
 ---------------
 
@@ -61,3 +78,4 @@ in order.
    are linked/copied.
 
 4. ``hooks.d/postinstall-<distro>`` is executed if exists.
+
