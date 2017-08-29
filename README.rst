@@ -45,20 +45,21 @@ Module structure
 Install modules
 ---------------
 
-.. code::
-  usage: install [-h] [--list] [--start-at MODULE] [--no-refresh] [module]
+(*try to make github rst renderer happy*)::
 
-  Configuration module installer.
+    usage: install [-h] [--list] [--start-at MODULE] [--no-refresh] [module]
 
-  positional arguments:
-    module                module to be installed
+    Configuration module installer.
 
-  optional arguments:
-    -h, --help            show this help message and exit
-    --list, -l            list available modules
-    --start-at MODULE, -t MODULE
-                          install modules starting at MODULE.
-    --no-refresh, -f      do not refresh package manager database.
+    positional arguments:
+      module                module to be installed
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      --list, -l            list available modules
+      --start-at MODULE, -t MODULE
+                            install modules starting at MODULE.
+      --no-refresh, -f      do not refresh package manager database.
 
 Operation logic
 ---------------
