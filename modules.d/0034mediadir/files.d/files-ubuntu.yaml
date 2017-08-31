@@ -1,0 +1,4 @@
+- source: symlink-mediadir.service
+  target: /etc/systemd/system/symlink-mediadir.service
+  asroot: true
+  copy: true

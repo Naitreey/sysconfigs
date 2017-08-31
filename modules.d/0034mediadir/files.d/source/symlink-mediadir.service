@@ -1,0 +1,9 @@
+[Unit]
+Description=Link /media to /run/media as Ubuntu is a weirdo
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c "ln -snf /media /run/media"
+
+[Install]
+WantedBy=multi-user.target
