@@ -19,3 +19,4 @@ imap <C-i> editWithVim
 unmap m
 unmap ;
 map m setMark
+let blacklists=["http://crm.jiandan100.cn/"]
