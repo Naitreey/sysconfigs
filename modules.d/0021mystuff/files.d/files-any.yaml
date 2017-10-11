@@ -1,2 +1,4 @@
 - source: mystuff
   target: ~/bin/mystuff
+- source: backup-mystuff
+  target: ~/bin/backup-mystuff
