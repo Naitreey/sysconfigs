@@ -1,0 +1,43 @@
+#!/bin/bash
+
+backup() {
+    declare bup_dir=$1 storage_dir=$2
+    sudo BUP_DIR=$bup_dir bup index -ux "$storage_dir"
+    sudo BUP_DIR=$bup_dir bup save -n mystuff-backup --strip -9 "$storage_dir"
+}
+
+args=$(getopt --name "$0" --options b:h --longoptions bup-dir:,help -- "$@") || exit $?
+
+eval set -- $args
+
+while [[ "$1" != -- ]]; do
+    case "$1" in
+        -b|--bup-dir )
+            declare bup_dir=$2
+            shift 2
+            ;;
+        -h|--help )
+            echo "usage: $0 --bup-dir <bup> <storage>"
+            exit 0
+            ;;
+    esac
+done
+
+[[ "$bup_dir" ]] || {
+    echo "-b|--bup-dir is required."
+    exit 1
+}
+
+shift 1
+
+(( $# != 1 )) && {
+    echo "storage directory is required."
+    exit 1
+}
+
+declare storage_dir=$1
+
+(
+    cd "$(dirname "$storage_dir")"
+    backup "$bup_dir" "$(basename "$storage_dir")"
+)
