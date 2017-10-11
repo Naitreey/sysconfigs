@@ -217,8 +217,4 @@ if [[ "$HOSTNAME" == *workstation ]]; then
 fi
 STORAGE=/run/media/naitree/9d2b094e-cbc6-48d2-aeb3-1f513dfaaf03
 
-backup-home() {
-    sudo rsync -avu --delete --exclude='.cache' --exclude='vm/*.qcow2' --exclude='Desktop/try' --exclude='.mozilla' /home/naitree/ naitree@workstation
-}
-
 # vim:ft=sh
