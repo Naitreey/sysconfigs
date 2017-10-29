@@ -7,3 +7,6 @@
 [submodule "modules.d/0033autojump/files.d/source/autojump"]
 	path = modules.d/0033autojump/files.d/source/autojump
 	url = https://github.com/wting/autojump.git
+[submodule "modules.d/0035kwin-quarter-tiling/files.d/kwin-quarter-tiling"]
+	path = modules.d/0035kwin-quarter-tiling/files.d/kwin-quarter-tiling
+	url = https://github.com/Jazqa/kwin-quarter-tiling.git
