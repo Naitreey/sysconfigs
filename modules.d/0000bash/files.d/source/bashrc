@@ -205,16 +205,8 @@ whereisfunc() {
     return $ret
 }
 
-CSBOOKS=~/mystuff/profession/resources/cs
-MYPROJECTS=~/mystuff/profession/my-projects
-TRYS=~/Desktop/try
-MATERIALS_READ=~/mystuff/profession/materials_read
-GOALS=~/mystuff/goals
-NOTES=~/mystuff/profession/notes-and-knowledge
-CAREER=~/mystuff/career
-if [[ "$HOSTNAME" == *workstation ]]; then
-    WORK=~/Desktop/devops
-fi
-STORAGE=/run/media/naitree/9d2b094e-cbc6-48d2-aeb3-1f513dfaaf03
-
+ss-run() {
+    http_proxy=http://127.0.0.1:8118/ https_proxy=http://127.0.0.1:8118/ \
+        "$@"
+}
 # vim:ft=sh
