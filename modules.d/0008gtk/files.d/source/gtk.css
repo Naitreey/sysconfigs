@@ -3,3 +3,42 @@
 window#vim-main-window {
     background-color: @solarized_dark;
 }
+
+/* gnome-terminal */
+@define-color bg-grey #222;
+@define-color active-grey #333;
+@define-color border-grey #555;
+terminal-window notebook {
+    border: 0;
+    padding: 0;
+    color: #eee;
+    background-color: shade(@active-grey, 1);
+}
+terminal-window notebook > header.top button {
+    background-image: none;
+    border: 0;
+    background-color: shade(@bg-grey, 1);
+}
+terminal-window notebook > header.top {
+    background-color: shade(@bg-grey, 1);
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+terminal-window notebook > header.top > tabs > tab {
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    background-color: shade(@bg-grey, 1);
+    border: 0;
+}
+terminal-window notebook > header.top > tabs > tab label {
+    padding: 0 0 0 0;
+    margin: 0 0 0 0;
+}
+terminal-window notebook scrollbar {
+    background-color: @solarized_dark;
+}
+terminal-window notebook scrollbar trough {
+    background-color: @solarized_dark;
+    box-shadow: inset 0px 0px 0px 3px transparent;
+}
