@@ -1,0 +1,26 @@
+#!/bin/bash
+declare usage="$0 [grep-options] <pattern> <file-or-directory>"
+(($# < 2)) && {
+    echo "$usage"
+    exit 1
+}
+
+declare -a grep_opts=('--color=always' '-n' '-E')
+(($# > 2)) && {
+    grep_opts+=("${@:1:$(($#-2))}")
+    shift $(($# - 2))
+}
+declare pattern=$1 target=$2
+[[ -d "$target" ]] && {
+    grep_opts+=("-r")
+    grep_opts+=(
+        "--exclude=*~"
+        "--exclude=.*"
+        "--exclude=*.pyc"
+        "--exclude-dir=.venv"
+        "--exclude-dir=.git"
+    )
+}
+grep_opts+=("-e" "$pattern")
+
+exec grep "${grep_opts[@]}" "$target"

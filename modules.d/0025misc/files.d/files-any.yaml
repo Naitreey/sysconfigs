@@ -1,2 +1,6 @@
 - source: ziroom-monitor.py
   target: ~/bin/ziroom-monitor.py
+- source: ss-run
+  target: ~/bin/ss-run
+- source: codegrep
+  target: ~/bin/codegrep
