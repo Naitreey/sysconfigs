@@ -163,6 +163,8 @@ stty -ixon
     PATH=$(echo -n $PATH | awk -v RS=: -v ORS=: -v mypath=$HOME/bin \
            '$0 == mypath {next} {print} END {printf("\b")}')
 PATH="$HOME/bin${PATH:+:$PATH}"
+# add $HOME/.local/bin
+[[ ":${PATH}:" == *:$HOME/.local/bin:* ]] || PATH="$HOME/.local/bin${PATH:+:$PATH}"
 # pyenv bin
 declare -x PYENV_ROOT="$HOME/.pyenv"
 [[ ":${PATH}:" == *:$PYENV_ROOT/bin:* ]] || PATH="$PYENV_ROOT/bin${PATH:+:$PATH}"
