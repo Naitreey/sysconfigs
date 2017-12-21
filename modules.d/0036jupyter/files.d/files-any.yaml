@@ -1,0 +1,4 @@
+- source: jupyter-vim-binding
+  target: ~/.local/share/jupyter/nbextensions/vim_binding
+- source: custom.js
+  target: ~/.jupyter/custom/custom.js
