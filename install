@@ -275,7 +275,7 @@ class Installer:
         try:
             path = (self._modulesdir/module).resolve(strict=True)
         except FileNotFoundError:
-            matches = list(self._modulesdir.glob(f"{module}*"))
+            matches = list(self._modulesdir.glob(f"*{module}*"))
             if not matches:
                 raise InstallError(
                     f"module name {module} does not exist."
@@ -283,7 +283,9 @@ class Installer:
             match_num = len(matches)
             if match_num != 1:
                 raise InstallError(
-                    f"module name {module} is ambiguous: {match_num} found."
+                    f"module name {module} is ambiguous: "
+                    f"{match_num} found: %s."
+                    % ", ".join(match.name for match in matches)
                 ) from None
             path = matches.pop()
         if commonpath([path, self._modulesdir]) != str(self._modulesdir):
