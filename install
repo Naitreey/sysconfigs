@@ -16,6 +16,7 @@ from os.path import (
     basename,
     dirname,
     isfile,
+    commonpath
 )
 from pathlib import Path
 from shutil import copytree, copy
@@ -257,7 +258,7 @@ class Installer:
     def check_support(self):
         pass
 
-    def install_one_module(self, path):
+    def _install_one_module(self, path):
         if isfile(path/"disabled"):
             warning(f"ignoring disabled module {path.name}")
         else:
@@ -268,7 +269,30 @@ class Installer:
 
     def install_all_modules(self, start_at=None):
         for path in self.iter_module_paths(start_at):
-            self.install_one_module(path)
+            self._install_one_module(path)
+
+    def install_one_module(self, module):
+        try:
+            path = (self._modulesdir/module).resolve(strict=True)
+        except FileNotFoundError:
+            matches = list(self._modulesdir.glob(f"*{module}*"))
+            if not matches:
+                raise InstallError(
+                    f"module name {module} does not exist."
+                ) from None
+            match_num = len(matches)
+            if match_num != 1:
+                raise InstallError(
+                    f"module name {module} is ambiguous: "
+                    f"{match_num} found: %s."
+                    % ", ".join(match.name for match in matches)
+                ) from None
+            path = matches.pop()
+        if commonpath([path, self._modulesdir]) != str(self._modulesdir):
+            raise InstallError(
+                f"module name {module} does not exist."
+            ) from None
+        self._install_one_module(path)
 
     def get_annex_files(self):
         run(split("git annex get --all --from=storage-bup"), check=True)
@@ -298,7 +322,7 @@ class Installer:
             if not module:
                 self.install_all_modules(start_at)
             else:
-                self.install_one_module(self._modulesdir/module)
+                self.install_one_module(module)
 
 def parse_args():
     parser = ArgumentParser(description="Configuration module installer.")
