@@ -416,6 +416,9 @@ def parse_args():
         metavar="<command>",
         help="any one of the following subcommands.",
     )
+    # workaround:
+    # https://stackoverflow.com/questions/18282403/argparse-with-required-subcommands
+    subparsers.required = True
     # subcommand: install
     install_parser = subparsers.add_parser(
         "install",
