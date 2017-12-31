@@ -1,0 +1,4 @@
+- source: audio.conf
+  target: /etc/bluetooth/audio.conf
+  asroot: true
+  copy: true
