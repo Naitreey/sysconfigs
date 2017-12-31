@@ -279,7 +279,9 @@ class ConfigModule:
                      self.prehookfmt, self.posthookfmt):
             p = Path(path.format(distro=self._distro))
             if not p.exists():
-                p.write_text("")
+                # write default bash shebang so that nothing
+                # breaks during execve() even if the hooks are left empty.
+                p.write_text("#!/bin/bash\n")
         # add exec bit
         for path in (self.prehookfmt, self.posthookfmt):
             Path(path.format(distro=self._distro)).chmod(0o755)
