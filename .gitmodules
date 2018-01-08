@@ -10,6 +10,3 @@
 [submodule "modules.d/0035kwin-quarter-tiling/files.d/kwin-quarter-tiling"]
 	path = modules.d/0035kwin-quarter-tiling/files.d/kwin-quarter-tiling
 	url = https://github.com/Jazqa/kwin-quarter-tiling.git
-[submodule "modules.d/0036jupyter/files.d/source/jupyter-vim-binding"]
-	path = modules.d/0036jupyter/files.d/source/jupyter-vim-binding
-	url = https://github.com/lambdalisue/jupyter-vim-binding
