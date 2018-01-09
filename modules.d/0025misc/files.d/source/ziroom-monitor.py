@@ -3,7 +3,6 @@
 # vim:fileencoding=utf-8
 from urllib.request import urlopen, Request
 from time import sleep
-from subprocess import run
 import shlex
 import sys
 from logging import basicConfig, getLogger, INFO
@@ -19,13 +18,7 @@ def get_page(url):
     return page
 
 def bookable(page):
-    return "other-canbook" in page or "other-loading" not in page
-
-def notify(count):
-    run(shlex.split("notify-send -u 'critical' -t 60000 -i "
-                    "/home/naitree/mystuff/security-info/avatar/avatar.jpg "
-                    f"'速度订房子 {count}'"),
-        check=True)
+    return "canbook" in page or "loading" not in page
 
 def main():
     basicConfig(
@@ -33,12 +26,9 @@ def main():
         level=INFO)
     logger = getLogger()
     url = sys.argv[1]
-    notified_times = 0
     while True:
         page = get_page(url)
         if bookable(page):
-            notified_times += 1
-            notify(notified_times)
             logger.warning("page size %d, bookable NOW...", len(page))
         else:
             logger.info("page size %d, not bookable yet...", len(page))
