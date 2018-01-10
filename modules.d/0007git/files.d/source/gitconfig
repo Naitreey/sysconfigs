@@ -20,3 +20,5 @@
 [credential]
 	helper = gnome-keyring
 [alias]
+[alias]
+	s = status
