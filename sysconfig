@@ -27,6 +27,7 @@ import os
 import re
 import sys
 import yaml
+import stat
 
 DISTROS = ["ubuntu", "fedora", "arch"]
 
@@ -75,6 +76,21 @@ def as_user(uid, gid):
         os.setresuid(old_ruid, old_euid, old_suid)
         if home_dir:
             os.environ['HOME'] = home_dir
+
+def hook_is_executable(exe):
+    """
+    A pre or post installation hook is executable when:
+    - exec bits are set
+    - file is not empty
+    We can not test shebang line as hooks may be binary executables.
+    """
+    exec_bits = stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
+    try:
+        stat_tuple = Path(exe).stat()
+    except FileNotFoundError:
+        return False
+    return stat_tuple.st_mode & exec_bits and stat_tuple.st_size
+
 
 def info(msg):
     print(Fore.GREEN + f"*** {msg} ***" + Fore.RESET)
@@ -172,17 +188,17 @@ class ConfigModule:
 
     def _load_check_prehook(self):
         prehook = self.prehookfmt.format(distro=self._distro)
-        if not lexists(prehook):
+        if not hook_is_executable(prehook):
             prehook = self.prehookfmt.format(distro="any")
-            if not lexists(prehook):
+            if not hook_is_executable(prehook):
                 return None
         return prehook
 
     def _load_check_posthook(self):
         posthook = self.posthookfmt.format(distro=self._distro)
-        if not lexists(posthook):
+        if not hook_is_executable(posthook):
             posthook = self.posthookfmt.format(distro="any")
-            if not lexists(posthook):
+            if not hook_is_executable(posthook):
                 return None
         return posthook
 
@@ -279,9 +295,7 @@ class ConfigModule:
                      self.prehookfmt, self.posthookfmt):
             p = Path(path.format(distro=self._distro))
             if not p.exists():
-                # write default bash shebang so that nothing
-                # breaks during execve() even if the hooks are left empty.
-                p.write_text("#!/bin/bash\n")
+                p.write_text("")
         # add exec bit
         for path in (self.prehookfmt, self.posthookfmt):
             Path(path.format(distro=self._distro)).chmod(0o755)
