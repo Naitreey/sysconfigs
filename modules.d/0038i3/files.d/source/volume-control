@@ -1,0 +1,34 @@
+#!/bin/bash -e
+declare default_sink=$(pactl info | awk -F: '$1 == "Default Sink" {print $2}')
+notify_volume() {
+    declare volume=$(
+        pactl list sinks | awk -v sink="$default_sink" \
+            '$0 ~ sink {found = 1} found && $1 == "Volume:" {print $5}'
+    )
+    notify-send --expire-time 500 --urgency=normal "Volume: $volume"
+}
+
+notify_mute() {
+    declare muted=$(
+        pactl list sinks | awk -v sink="$default_sink" \
+            '$0 ~ sink {found = 1} found && $1 == "Mute:" {print $2}'
+    )
+    notify-send --expire-time 500 --urgency=normal "Muted: $muted"
+}
+
+case "$1" in
+    up)
+        pactl set-sink-volume @DEFAULT_SINK@ +5%
+        notify_volume
+        ;;
+    down)
+        pactl set-sink-volume @DEFAULT_SINK@ -5%
+        notify_volume
+        ;;
+    toggle-mute)
+        pactl set-sink-mute @DEFAULT_SINK@ toggle
+        notify_mute
+        ;;
+esac
+
+exit 0
