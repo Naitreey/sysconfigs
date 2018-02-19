@@ -48,6 +48,7 @@ PKG_CMD = {
     ]
 }
 
+
 @contextmanager
 def enterdir(dir_):
     pwd = Path()
@@ -56,6 +57,7 @@ def enterdir(dir_):
         yield Path()
     finally:
         os.chdir(pwd)
+
 
 @contextmanager
 def as_user(uid, gid):
@@ -77,7 +79,8 @@ def as_user(uid, gid):
         if home_dir:
             os.environ['HOME'] = home_dir
 
-def hook_is_executable(exe):
+
+def is_executable_file(exe):
     """
     A pre or post installation hook is executable when:
     - exec bits are set
@@ -92,14 +95,28 @@ def hook_is_executable(exe):
     return stat_tuple.st_mode & exec_bits and stat_tuple.st_size
 
 
+def is_null_file(file):
+    """
+    Check file is empty or does not exist at all.
+    """
+    try:
+        stat_tuple = Path(file).stat()
+    except FileNotFoundError:
+        return True
+    return stat_tuple.st_size == 0
+
+
 def info(msg):
     print(Fore.GREEN + f"*** {msg} ***" + Fore.RESET)
+
 
 def warning(msg):
     print(Fore.YELLOW + f"*** {msg} ***" + Fore.RESET)
 
+
 def error(msg):
     print(Fore.RED + f"*** {msg} ***" + Fore.RESET)
+
 
 def current_distro():
     distro_regex = re.compile(r"(%s)" % "|".join(DISTROS))
@@ -154,9 +171,9 @@ class ConfigModule:
 
     def _load_check_pkgs(self):
         pkgsfile = self.pkgsfmt.format(distro=self._distro)
-        if not lexists(pkgsfile):
+        if is_null_file(pkgsfile):
             pkgsfile = self.pkgsfmt.format(distro="any")
-            if not lexists(pkgsfile):
+            if is_null_file(pkgsfile):
                 return []
         with open(pkgsfile, "r") as f:
             packages = yaml.load(f)
@@ -170,9 +187,9 @@ class ConfigModule:
 
     def _load_check_files(self):
         filesfile = self.filesfmt.format(distro=self._distro)
-        if not lexists(filesfile):
+        if is_null_file(filesfile):
             filesfile = self.filesfmt.format(distro="any")
-            if not lexists(filesfile):
+            if is_null_file(filesfile):
                 return []
         with open(filesfile, "r") as f:
             files = yaml.load(f)
@@ -188,17 +205,17 @@ class ConfigModule:
 
     def _load_check_prehook(self):
         prehook = self.prehookfmt.format(distro=self._distro)
-        if not hook_is_executable(prehook):
+        if not is_executable_file(prehook):
             prehook = self.prehookfmt.format(distro="any")
-            if not hook_is_executable(prehook):
+            if not is_executable_file(prehook):
                 return None
         return prehook
 
     def _load_check_posthook(self):
         posthook = self.posthookfmt.format(distro=self._distro)
-        if not hook_is_executable(posthook):
+        if not is_executable_file(posthook):
             posthook = self.posthookfmt.format(distro="any")
-            if not hook_is_executable(posthook):
+            if not is_executable_file(posthook):
                 return None
         return posthook
 
