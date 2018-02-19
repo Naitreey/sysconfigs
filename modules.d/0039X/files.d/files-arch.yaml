@@ -1,0 +1,2 @@
+- source: xsession
+  target: ~/.xsession
