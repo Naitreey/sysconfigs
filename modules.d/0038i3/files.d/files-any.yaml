@@ -1,2 +1,12 @@
-- source: config
+- source: i3.config
   target: ~/.config/i3/config
+- source: i3exit
+  target: ~/bin/i3exit
+- source: dunstrc
+  target: ~/.config/dunst/dunstrc
+- source: volume-control
+  target: ~/bin/volume-control
+- source: i3autolock
+  target: ~/bin/i3autolock
+- source: i3activity-detect
+  target: ~/bin/i3activity-detect
