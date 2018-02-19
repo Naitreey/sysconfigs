@@ -2,7 +2,6 @@
 - i3blocks
 - i3lock
 - i3status
-- dmenu
 - network-manager-applet
 - pavucontrol
 - playerctl
@@ -13,3 +12,5 @@
 - xautolock
 - ttf-font-awesome
 - lxappearance-gtk3
+- compton
+- rofi
