@@ -10,3 +10,9 @@
   target: ~/bin/i3autolock
 - source: i3activity-detect
   target: ~/bin/i3activity-detect
+- source: compton.conf
+  target: ~/.config/compton.conf
+- source: rofi.config
+  target: ~/.config/rofi/config
+- source: Arc-Dark.rasi
+  target: ~/.config/rofi/Arc-Dark.rasi
