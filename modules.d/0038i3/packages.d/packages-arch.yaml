@@ -3,3 +3,11 @@
 - i3lock
 - i3status
 - dmenu
+- network-manager-applet
+- pavucontrol
+- playerctl
+- perl-anyevent-i3
+- dunst
+- nitrogen
+- scrot
+- xautolock
