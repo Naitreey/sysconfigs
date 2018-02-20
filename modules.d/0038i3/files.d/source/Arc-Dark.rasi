@@ -4,36 +4,41 @@
  * Copyright: 2017 leofa
  ***********************************************/
 
-// alternate elements use the same style as normal elements.
+/* alternate elements use the same style as normal elements.
+ * In this rendering engine, alpha channel's transparency is not absolute
+ * but relative. So we define list elements' background to be transparent,
+ * which fall back to window's background color.
+ */
 * {
-    selected-normal-foreground:  rgba ( 249, 249, 249, 100 % );
     foreground:                  rgba ( 196, 203, 212, 100 % );
     normal-foreground:           @foreground;
+    active-foreground:           rgba ( 101, 172, 255, 100 % );
+    urgent-foreground:           rgba ( 204, 102, 102, 100 % );
+    selected-normal-foreground:  rgba ( 249, 249, 249, 100 % );
+    selected-active-foreground:  rgba ( 249, 249, 249, 100 % );
+    selected-urgent-foreground:  rgba ( 249, 249, 249, 100 % );
     alternate-normal-foreground: @foreground;
     alternate-active-foreground: @active-foreground;
     alternate-urgent-foreground: @urgent-foreground;
     background:                  rgba ( 45, 48, 59, 85 % );
+    background-color:            rgba ( 0, 0, 0, 0 % );
     normal-background:           @background;
-    urgent-background:           rgba ( 29, 31, 33, 17 % );
     active-background:           rgba ( 29, 31, 33, 17 % );
-    alternate-active-background: @active-background;
-    alternate-normal-background: @background;
-    alternate-urgent-background: @urgent-background;
-    red:                         rgba ( 220, 50, 47, 100 % );
-    selected-urgent-foreground:  rgba ( 249, 249, 249, 100 % );
-    blue:                        rgba ( 38, 139, 210, 100 % );
-    urgent-foreground:           rgba ( 204, 102, 102, 100 % );
-    active-foreground:           rgba ( 101, 172, 255, 100 % );
-    lightbg:                     rgba ( 238, 232, 213, 100 % );
-    selected-active-foreground:  rgba ( 249, 249, 249, 100 % );
-    lightfg:                     rgba ( 88, 104, 117, 100 % );
+    urgent-background:           rgba ( 29, 31, 33, 17 % );
     selected-normal-background:  rgba ( 64, 132, 214, 100 % );
+    selected-active-background:  rgba ( 68, 145, 237, 100 % );
+    selected-urgent-background:  rgba ( 165, 66, 66, 100 % );
+    alternate-normal-background: @background;
+    alternate-active-background: @active-background;
+    alternate-urgent-background: @urgent-background;
+    element-background:          transparent;
+    red:                         rgba ( 220, 50, 47, 100 % );
+    blue:                        rgba ( 38, 139, 210, 100 % );
+    lightbg:                     rgba ( 238, 232, 213, 100 % );
+    lightfg:                     rgba ( 88, 104, 117, 100 % );
     border-color:                rgba ( 124, 131, 137, 100 % );
     spacing:                     2;
     separatorcolor:              rgba ( 29, 31, 33, 100 % );
-    selected-urgent-background:  rgba ( 165, 66, 66, 100 % );
-    background-color:            rgba ( 0, 0, 0, 0 % );
-    selected-active-background:  rgba ( 68, 145, 237, 100 % );
     font:                        "Ubuntu Mono 14";
 }
 #window {
@@ -69,7 +74,7 @@
     padding: 1px ;
 }
 #element.normal.normal {
-    background-color: @normal-background;
+    background-color: @element-background;
     text-color:       @normal-foreground;
 }
 #element.normal.urgent {
@@ -77,7 +82,7 @@
     text-color:       @urgent-foreground;
 }
 #element.normal.active {
-    background-color: @active-background;
+    background-color: @element-background;
     text-color:       @active-foreground;
 }
 #element.selected.normal {
@@ -93,7 +98,7 @@
     text-color:       @selected-active-foreground;
 }
 #element.alternate.normal {
-    background-color: @alternate-normal-background;
+    background-color: @element-background;
     text-color:       @alternate-normal-foreground;
 }
 #element.alternate.urgent {
@@ -101,7 +106,7 @@
     text-color:       @alternate-urgent-foreground;
 }
 #element.alternate.active {
-    background-color: @alternate-active-background;
+    background-color: @element-background;
     text-color:       @alternate-active-foreground;
 }
 #scrollbar {
