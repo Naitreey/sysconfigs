@@ -10,3 +10,6 @@
 [submodule "modules.d/0035kwin-quarter-tiling/files.d/kwin-quarter-tiling"]
 	path = modules.d/0035kwin-quarter-tiling/files.d/kwin-quarter-tiling
 	url = https://github.com/Jazqa/kwin-quarter-tiling.git
+[submodule "modules.d/0038i3/files.d/source/flat-remix"]
+	path = modules.d/0038i3/files.d/source/flat-remix
+	url = https://github.com/daniruiz/flat-remix.git

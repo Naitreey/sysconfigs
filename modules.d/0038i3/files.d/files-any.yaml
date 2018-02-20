@@ -18,3 +18,9 @@
   target: ~/.config/rofi/Arc-Dark.rasi
 - source: i3focus-last
   target: ~/bin/i3focus-last
+- source: flat-remix/Flat-Remix
+  target: ~/.icon/Flat-Remix
+- source: flat-remix/Flat-Remix-Dark
+  target: ~/.icon/Flat-Remix-Dark
+- source: flat-remix/Flat-Remix-Light
+  target: ~/.icon/Flat-Remix-Light
