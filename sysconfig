@@ -16,11 +16,12 @@ from os.path import (
     basename,
     dirname,
     isfile,
+    islink,
     commonpath,
     sep as path_sep
 )
 from pathlib import Path
-from shutil import copytree, copy
+from shutil import copytree, copy, rmtree
 from subprocess import run
 from shlex import split
 import os
@@ -48,6 +49,7 @@ PKG_CMD = {
     ]
 }
 
+NOT_PROVIDED = object()
 
 @contextmanager
 def enterdir(dir_):
@@ -236,13 +238,21 @@ class ConfigModule:
             ))
             os.rename(file, backup_name)
 
+    def _remove_if_exists(self, file):
+        if not lexists(file):
+            return
+        warning(f"{file} exists, removing")
+        if islink(file) or isfile(file):
+            os.remove(file)
+        elif isdir(file):
+            # symlink to directory has been excluded, we can safely remove
+            rmtree(file)
+
     def _link(self, target, link_name):
-        self._rename_if_exists(link_name)
         os.symlink(abspath(target), link_name,
                    target_is_directory=isdir(target))
 
     def _copy(self, source, target):
-        self._rename_if_exists(target)
         if isdir(source):
             copytree(source, target)
         else:
@@ -267,10 +277,13 @@ class ConfigModule:
             run(PKG_CMD[self._distro][1] + " ".join(pkgs),
                 shell=True, check=True)
 
-    def install_configs(self):
+    def install_configs(self, backup_config):
         def copy_or_link(source, target):
             target = expanduser(target)
             os.makedirs(dirname(target), exist_ok=True)
+            if backup_config:
+                self._rename_if_exists(target)
+            self._remove_if_exists(target)
             if config.get("copy", False):
                 self._copy(
                     join(self.sourcedir, source),
@@ -293,10 +306,10 @@ class ConfigModule:
             else:
                 copy_or_link(source, target)
 
-    def install(self):
+    def install(self, backup_config):
         self.run_prehook()
         self.install_packages()
-        self.install_configs()
+        self.install_configs(backup_config=backup_config)
         self.run_posthook()
 
     def show(self):
@@ -321,6 +334,7 @@ class ConfigModule:
 class SysConfig:
 
     def __init__(self):
+        self.backup_config = NOT_PROVIDED
         self._distro = current_distro()
         self._modulesdir = (Path()/"modules.d").resolve(strict=True)
         self.check_support()
@@ -335,7 +349,7 @@ class SysConfig:
             info(f"installing {path.name}")
             with enterdir(path):
                 module = ConfigModule(path.name, distro=self._distro)
-                module.install()
+                module.install(backup_config=self.backup_config)
 
     def install_all_modules(self, start_at=None):
         if start_at:
@@ -401,7 +415,9 @@ class SysConfig:
     def list_modules(self):
         print("\n".join(p.name for p in self.iter_module_paths()))
 
-    def install_modules(self, start_at=None, refresh=False, annex_repo=None, module=None):
+    def install_modules(self, start_at=None, refresh=False, annex_repo=None,
+                        backup_config=True, module=None):
+        self.backup_config = backup_config
         if annex_repo:
             self.get_annex_files(annex_repo=annex_repo)
         if refresh:
@@ -428,7 +444,8 @@ class SysConfig:
             ConfigModule(name).init()
 
 
-def install_modules(start_at=None, refresh=False, annex_repo=None, module=None):
+def install_modules(start_at=None, refresh=False, annex_repo=None,
+                    backup_config=True, module=None):
     check_sudo()
     actual_uid, actual_gid = get_actual_ugid()
     with as_user(uid=actual_uid, gid=actual_gid):
@@ -436,6 +453,7 @@ def install_modules(start_at=None, refresh=False, annex_repo=None, module=None):
             start_at=start_at,
             refresh=refresh,
             annex_repo=annex_repo,
+            backup_config=backup_config,
             module=module,
         )
 
@@ -501,6 +519,15 @@ def parse_args():
         help="specify git-annex repository where binary files "
              "are stored. When specified, those files will be firstly "
              "fetched from it before module installation.",
+    )
+    install_parser.add_argument(
+        "--no-backup-config",
+        action="store_false",
+        dest="backup_config",
+        help="""by default, original configuration files and directories
+             are renamed with orig.<N> suffix to avoid data loss. When
+             this flag is specified, no backup will be made.
+             """,
     )
     install_parser.set_defaults(operation=install_modules)
     # subcommand: list
