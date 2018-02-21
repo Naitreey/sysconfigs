@@ -24,3 +24,13 @@
   target: ~/.icon/Flat-Remix-Dark
 - source: flat-remix/Flat-Remix-Light
   target: ~/.icon/Flat-Remix-Light
+- source: i3blocks.conf
+  target: ~/.config/i3blocks/config
+- source: i3blocks-ipaddress
+  target: ~/bin/i3blocks-ipaddress
+- source: i3blocks-wifi
+  target: ~/bin/i3blocks-wifi
+- source: i3blocks-bandwidth
+  target: ~/bin/i3blocks-bandwidth
+- source: i3blocks-battery
+  target: ~/bin/i3blocks-battery

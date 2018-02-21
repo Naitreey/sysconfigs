@@ -1,34 +1,78 @@
 #!/bin/bash -e
-declare default_sink=$(pactl info | awk -F: '$1 == "Default Sink" {print $2}')
-notify_volume() {
-    declare volume=$(
-        pactl list sinks | awk -v sink="$default_sink" \
-            '$0 ~ sink {found = 1} found && $1 == "Volume:" {print $5}'
-    )
-    notify-send --expire-time 500 --urgency=normal "Volume: $volume"
+declare -r usage="Usage: [BLOCK_BUTTON={1|4|5}] $0 [up|down|toggle-mute]"
+
+declare -r step=5
+declare -r signame=RTMIN+1
+
+get_volume() {
+    ponymix get-volume
 }
 
-notify_mute() {
-    declare muted=$(
-        pactl list sinks | awk -v sink="$default_sink" \
-            '$0 ~ sink {found = 1} found && $1 == "Mute:" {print $2}'
-    )
-    notify-send --expire-time 500 --urgency=normal "Muted: $muted"
+is_muted() {
+    ponymix is-muted
 }
 
-case "$1" in
-    up)
-        pactl set-sink-volume @DEFAULT_SINK@ +5%
-        notify_volume
-        ;;
-    down)
-        pactl set-sink-volume @DEFAULT_SINK@ -5%
-        notify_volume
-        ;;
-    toggle-mute)
-        pactl set-sink-mute @DEFAULT_SINK@ toggle
-        notify_mute
-        ;;
-esac
+print_status_block() {
+    declare icon full short status=0 vol=$(get_volume)
 
-exit 0
+    # determine icon
+    if [ $vol -eq 0 ]; then
+        icon=""
+    else
+        if [ $vol -le 33 ]; then
+            icon=""
+        else
+            icon=""
+        fi
+    fi
+
+    # determine mute status
+    if is_muted; then
+        color="#ff0000"
+        status=33
+    fi
+
+    full="$icon $vol%"
+    short="$vol"
+
+    echo "$full"
+    echo "$short"
+    echo "$color"
+
+    exit $status
+}
+
+send_signal() {
+    pkill -$signame i3blocks
+    exit $?
+}
+
+if [[ $1 ]] || [[ $BLOCK_BUTTON ]]; then
+    declare operation=${1:-$BLOCK_BUTTON}
+    if [[ $1 ]]; then
+        declare signal=True
+    fi
+fi
+
+if [[ $operation ]]; then
+    case $operation in
+        # left click or "toggle-mute"
+        1|toggle-mute)
+            ponymix toggle >/dev/null
+            ;;
+        # scroll up or "up"
+        4|up)
+            ponymix increase $step >/dev/null
+            ;;
+        # scroll down or "down"
+        5|down)
+            ponymix decrease $step >/dev/null
+            ;;
+    esac
+fi
+
+if [[ $signal == True ]]; then
+    send_signal
+else
+    print_status_block
+fi

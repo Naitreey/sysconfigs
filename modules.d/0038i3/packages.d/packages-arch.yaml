@@ -10,9 +10,12 @@
 - nitrogen
 - scrot
 - xautolock
-- ttf-font-awesome
 - lxappearance-gtk3
 - compton
 - rofi
 - arc-gtk-theme
 - nautilus
+- ponymix
+- sysstat
+- acpi
+- xdotool
