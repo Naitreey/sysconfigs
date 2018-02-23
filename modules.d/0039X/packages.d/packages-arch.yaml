@@ -1,3 +1,5 @@
 - xorg-xmodmap
 - xorg-xev
 - xorg-xrdb
+- xorg-xinput
+- xorg-xrandr
