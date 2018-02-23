@@ -2,7 +2,6 @@
 - i3blocks
 - i3lock
 - i3status
-- network-manager-applet
 - pavucontrol
 - playerctl
 - perl-anyevent-i3
@@ -14,7 +13,6 @@
 - compton
 - rofi
 - arc-gtk-theme
-- nautilus
 - ponymix
 - sysstat
 - acpi
