@@ -499,6 +499,11 @@ class SysConfig:
 
 def install_modules(start_at=False, refresh=False, annex_repo=None,
                     backup_config=True, install_pkg=True, modules=None):
+    if args.start_at and len(args.modules) > 1:
+        raise ArgumentError(
+            "When installing remaining modules, "
+            "multiple modules are not allowed."
+        )
     check_sudo()
     actual_uid, actual_gid = get_actual_ugid()
     with as_user(uid=actual_uid, gid=actual_gid):
@@ -637,11 +642,6 @@ def parse_args():
     initmod_parser.set_defaults(operation=init_module)
     ## parse
     args = parser.parse_args()
-    if args.start_at and len(args.modules) > 1:
-        parser.error(
-            "When --start-at is specified, only zero or one module "
-            "is allowed."
-        )
     return args
 
 
