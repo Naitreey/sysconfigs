@@ -39,10 +39,9 @@ Module structure
 
 - ``hooks.d/preinstall-<distro>``, ``hooks.d/postinstall-<distro>``
 
-  scripts to be executed before/after configuration module installation.
-  The scripts must be executable, which also means shebang line ``#!``
-  must be present. This enables arbitrary programs and scripts to be
-  executed.
+  hooks to be executed before/after configuration module installation.
+  This can be any binary or script executable. The only constraint is
+  the file's exec bits are set properly.
 
 CLI interface
 -------------
