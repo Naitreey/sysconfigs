@@ -29,6 +29,7 @@ import re
 import sys
 import yaml
 import stat
+import pwd
 
 # ----------- argparse formatter fix: remove subparser metavar line.
 from argparse import HelpFormatter, _SubParsersAction
@@ -93,22 +94,40 @@ def enterdir(dir_):
 
 
 @contextmanager
-def as_user(uid, gid):
-    home_dir = os.environ.get('HOME')
+def as_user(uid):
+    """
+    ruid, euid, rgid, egid are set according to ``uid``.
+    suid, sgid remain original value.
+    """
     # When $HOME is present, expanduser() uses it directly.
     # It has to be deleted such that expanduser() looks at
     # real uid and /etc/passwd file for home directory.
+    home_dir = os.environ.get('HOME')
     if home_dir:
         del os.environ['HOME']
     old_ruid, old_euid, old_suid = os.getresuid()
     old_rgid, old_egid, old_sgid = os.getresgid()
+    old_sup_groups = os.getgroups()
+    pwd_entry = pwd.getpwuid(uid)
+    gid = pwd_entry.pw_gid
+    sup_groups = os.getgrouplist(pwd_entry.pw_name, pwd_entry.pw_gid)
+    # TODO set supplementary groups before or after changing uids,
+    # depends on which user has privilege. I know this is ugly.
+    if old_euid == 0:
+        os.setgroups(sup_groups)
     os.setresgid(gid, gid, old_sgid)
     os.setresuid(uid, uid, old_suid)
+    if uid == 0:
+        os.setgroups(sup_groups)
     try:
         yield
     finally:
+        if uid == 0:
+            os.setgroups(old_sup_groups)
         os.setresgid(old_rgid, old_egid, old_sgid)
         os.setresuid(old_ruid, old_euid, old_suid)
+        if old_euid == 0:
+            os.setgroups(old_sup_groups)
         if home_dir:
             os.environ['HOME'] = home_dir
 
@@ -336,7 +355,7 @@ class ConfigModule:
             source, target = config['source'], config['target']
             print(f"{source} --> {target}")
             if config.get("asroot", False):
-                with as_user(uid=0, gid=0):
+                with as_user(uid=0):
                     copy_or_link(source, target)
             else:
                 copy_or_link(source, target)
@@ -501,7 +520,7 @@ def install_modules(remaining=False, refresh=False, annex_repo=None,
                     backup_config=True, install_pkg=True, modules=None):
     check_sudo()
     actual_uid, actual_gid = get_actual_ugid()
-    with as_user(uid=actual_uid, gid=actual_gid):
+    with as_user(uid=actual_uid):
         SysConfig().install_modules(
             remaining=remaining,
             refresh=refresh,
