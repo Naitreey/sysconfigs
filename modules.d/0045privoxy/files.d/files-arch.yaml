@@ -1,0 +1,4 @@
+- source: config
+  target: /etc/privoxy/config
+  asroot: true
+  copy: true
