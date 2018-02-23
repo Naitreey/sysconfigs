@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # vim:fileencoding=utf-8
 
-from argparse import ArgumentParser
+from argparse import ArgumentParser, ArgumentError
 from colorama import Fore
 from contextlib import contextmanager
 from glob import iglob
@@ -391,11 +391,15 @@ class SysConfig:
                     install_pkg=self.install_pkg,
                 )
 
-    def install_all_modules(self, start_at=None):
-        if start_at:
-            start_at = self._resolve_module_path_by_name(start_at).name
-        for path in self.iter_module_paths(start_at):
+    def install_all_modules(self, start_module=None):
+        if start_module:
+            start_module = self._resolve_module_path_by_name(start_module).name
+        for path in self.iter_module_paths(start_module):
             self._install_one_module(path)
+
+    def install_multiple_modules(self, modules):
+        for module in modules:
+            self.install_one_module(module)
 
     def install_one_module(self, module):
         path = self._resolve_module_path_by_name(module)
@@ -455,18 +459,20 @@ class SysConfig:
     def list_modules(self):
         print("\n".join(p.name for p in self.iter_module_paths()))
 
-    def install_modules(self, start_at=None, refresh=False, annex_repo=None,
-                        backup_config=True, install_pkg=True, module=None):
+    def install_modules(self, start_at=False, refresh=False, annex_repo=None,
+                        backup_config=True, install_pkg=True, modules=None):
         self.backup_config = backup_config
         self.install_pkg = install_pkg
         if annex_repo:
             self.get_annex_files(annex_repo=annex_repo)
         if refresh:
             self.refresh_pkg_cache()
-        if not module:
-            self.install_all_modules(start_at)
+        if start_at:
+            self.install_all_modules(
+                start_module=modules.pop() if modules else None
+            )
         else:
-            self.install_one_module(module)
+            self.install_multiple_modules(modules)
 
     def show_module(self, module):
         path = self._resolve_module_path_by_name(module)
@@ -491,8 +497,8 @@ class SysConfig:
             ConfigModule(name, distro=distro).init()
 
 
-def install_modules(start_at=None, refresh=False, annex_repo=None,
-                    backup_config=True, install_pkg=True, module=None):
+def install_modules(start_at=False, refresh=False, annex_repo=None,
+                    backup_config=True, install_pkg=True, modules=None):
     check_sudo()
     actual_uid, actual_gid = get_actual_ugid()
     with as_user(uid=actual_uid, gid=actual_gid):
@@ -502,7 +508,7 @@ def install_modules(start_at=None, refresh=False, annex_repo=None,
             annex_repo=annex_repo,
             backup_config=backup_config,
             install_pkg=install_pkg,
-            module=module,
+            modules=modules,
         )
 
 
@@ -540,18 +546,18 @@ def parse_args():
                     "rather than actual root user.",
         help="install configuration modules.",
     )
-    mutex_group = install_parser.add_mutually_exclusive_group()
-    mutex_group.add_argument(
-        "module",
-        nargs="?",
+    install_parser.add_argument(
+        "modules",
+        nargs="*",
         help="the name of a module to be installed, "
              "or unambiguous part of it.",
-        metavar="MODULE"
+        metavar="MODULE",
     )
-    mutex_group.add_argument(
+    install_parser.add_argument(
         "--start-at", "-t",
-        metavar="FIRST",
-        help="install modules starting at %(metavar)s."
+        action="store_true",
+        help="""install ALL modules starting at the specified module.
+             The modules are installed in lexicographical order.""",
     )
     install_parser.add_argument(
         "--refresh", "-r",
@@ -631,6 +637,11 @@ def parse_args():
     initmod_parser.set_defaults(operation=init_module)
     ## parse
     args = parser.parse_args()
+    if args.start_at and len(args.modules) > 1:
+        parser.error(
+            "When --start-at is specified, only zero or one module "
+            "is allowed."
+        )
     return args
 
 
