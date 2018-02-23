@@ -39,29 +39,24 @@ Module structure
 
 - ``hooks.d/preinstall-<distro>``, ``hooks.d/postinstall-<distro>``
 
-  scripts to be executed before/after configuration module installation.
-  The scripts must be executable, which also means shebang line ``#!``
-  must be present. This enables arbitrary programs and scripts to be
-  executed.
+  hooks to be executed before/after configuration module installation.
+  This can be any binary or script executable. The only constraint is
+  the file's exec bits are set properly.
 
-Install modules
----------------
+CLI interface
+-------------
 
-(*try to make github rst renderer happy*)::
+Operations are mainly executed via ``sysconfig`` script, which features the
+following functionalities:
 
-    usage: install [-h] [--list] [--start-at MODULE] [--no-refresh] [module]
+- Install the specified or all config modules.
 
-    Configuration module installer.
+- List available config modules.
 
-    positional arguments:
-      module                module to be installed
+- Show content of the specified config module.
 
-    optional arguments:
-      -h, --help            show this help message and exit
-      --list, -l            list available modules
-      --start-at MODULE, -t MODULE
-                            install modules starting at MODULE.
-      --no-refresh, -f      do not refresh package manager database.
+- Initialize a new config module by creating boilerplate module directory
+  and file structure.
 
 Operation logic
 ---------------
@@ -82,4 +77,3 @@ in order.
    are linked/copied.
 
 4. ``hooks.d/postinstall-<distro>`` is executed if exists.
-

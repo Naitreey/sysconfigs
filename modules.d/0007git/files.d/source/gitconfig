@@ -7,7 +7,7 @@
 	editor = gvim -f
 	excludesfile = ~/.gitignore
 	quotePath = false
-	askPass = /usr/bin/ksshaskpass
+	askPass = /usr/lib/openssh/gnome-ssh-askpass
 [merge]
 	tool = gvimdiff
 [rerere]
@@ -18,7 +18,7 @@
 	linenumber = green
 	separator = cyan
 [credential]
-	helper = gnome-keyring
+	helper = /usr/share/doc/git/contrib/credential/gnome-keyring/git-credential-gnome-keyring
 [alias]
 [alias]
 	s = status

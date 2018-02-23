@@ -19,11 +19,11 @@
 - source: i3focus-last
   target: ~/bin/i3focus-last
 - source: flat-remix/Flat-Remix
-  target: ~/.icon/Flat-Remix
+  target: ~/.icons/Flat-Remix
 - source: flat-remix/Flat-Remix-Dark
-  target: ~/.icon/Flat-Remix-Dark
+  target: ~/.icons/Flat-Remix-Dark
 - source: flat-remix/Flat-Remix-Light
-  target: ~/.icon/Flat-Remix-Light
+  target: ~/.icons/Flat-Remix-Light
 - source: i3blocks.conf
   target: ~/.config/i3blocks/config
 - source: i3blocks-ipaddress
