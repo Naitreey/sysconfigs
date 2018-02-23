@@ -7,6 +7,7 @@
 	editor = gvim -f
 	excludesfile = ~/.gitignore
 	quotePath = false
+	askPass = /usr/lib/openssh/gnome-ssh-askpass
 [merge]
 	tool = gvimdiff
 [rerere]
