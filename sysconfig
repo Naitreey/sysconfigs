@@ -341,9 +341,10 @@ class ConfigModule:
             else:
                 copy_or_link(source, target)
 
-    def install(self, backup_config):
+    def install(self, backup_config, install_pkg):
         self.run_prehook()
-        self.install_packages()
+        if install_pkg:
+            self.install_packages()
         self.install_configs(backup_config=backup_config)
         self.run_posthook()
 
@@ -370,6 +371,7 @@ class SysConfig:
 
     def __init__(self):
         self.backup_config = NOT_PROVIDED
+        self.install_pkg = NOT_PROVIDED
         self._current_distro = current_distro()
         self._modulesdir = (Path()/"modules.d").resolve(strict=True)
         self.check_support()
@@ -384,7 +386,10 @@ class SysConfig:
             info(f"installing {path.name}")
             with enterdir(path):
                 module = ConfigModule(path.name, distro=self._current_distro)
-                module.install(backup_config=self.backup_config)
+                module.install(
+                    backup_config=self.backup_config,
+                    install_pkg=self.install_pkg,
+                )
 
     def install_all_modules(self, start_at=None):
         if start_at:
@@ -451,8 +456,9 @@ class SysConfig:
         print("\n".join(p.name for p in self.iter_module_paths()))
 
     def install_modules(self, start_at=None, refresh=False, annex_repo=None,
-                        backup_config=True, module=None):
+                        backup_config=True, install_pkg=True, module=None):
         self.backup_config = backup_config
+        self.install_pkg = install_pkg
         if annex_repo:
             self.get_annex_files(annex_repo=annex_repo)
         if refresh:
@@ -486,7 +492,7 @@ class SysConfig:
 
 
 def install_modules(start_at=None, refresh=False, annex_repo=None,
-                    backup_config=True, module=None):
+                    backup_config=True, install_pkg=True, module=None):
     check_sudo()
     actual_uid, actual_gid = get_actual_ugid()
     with as_user(uid=actual_uid, gid=actual_gid):
@@ -495,6 +501,7 @@ def install_modules(start_at=None, refresh=False, annex_repo=None,
             refresh=refresh,
             annex_repo=annex_repo,
             backup_config=backup_config,
+            install_pkg=install_pkg,
             module=module,
         )
 
@@ -547,7 +554,7 @@ def parse_args():
         help="install modules starting at %(metavar)s."
     )
     install_parser.add_argument(
-        "--refresh",
+        "--refresh", "-r",
         dest="refresh",
         action="store_true",
         help="refresh package manager database before installing."
@@ -568,6 +575,13 @@ def parse_args():
              are renamed with orig.<N> suffix to avoid data loss. When
              this flag is specified, no backup will be made.
              """,
+    )
+    install_parser.add_argument(
+        "--no-install-pkg",
+        action="store_false",
+        dest="install_pkg",
+        help="""skip package installation step. Useful e.g. when only config
+             files needs to be updated.""",
     )
     install_parser.set_defaults(operation=install_modules)
     # subcommand: list
