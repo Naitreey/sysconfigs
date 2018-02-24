@@ -1,0 +1,2 @@
+#!/bin/bash -e
+systemctl --user --now enable powerline-daemon
