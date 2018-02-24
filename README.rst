@@ -1,8 +1,35 @@
 sysconfigs - A collection of system configuration modules
 =========================================================
 
-Module structure
-----------------
+Overview
+--------
+Sysconfigs is my take on Linux workstation configuration.
+It is currently focused on Arch Linux, on which I use for a daily
+basis.
+
+Goals
+~~~~~
+The main goal of this project is twofolds:
+
+- To collect all my system configurations therefore I'll never
+  need to configure the same stuff again. (Unless something is broken.)
+
+- To organize my configurations and construct an automated way
+  to apply them easily.
+
+Project structure
+~~~~~~~~~~~~~~~~~
+The repository mainly consists of two parts:
+
+- ``sysconfig`` -- A python script to facilitate applying and modifying
+  configurations.
+
+- ``modules.d`` -- directory where configs reside. Each subdirectory
+  is a config module, which covers configuration of an application or
+  functionality of my Linux system.
+
+Config module structure
+-----------------------
 
 - ``packages.d/packages-<distro>.yaml``
 
