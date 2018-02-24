@@ -594,7 +594,7 @@ def parse_args():
              "fetched from it before module installation.",
     )
     install_parser.add_argument(
-        "--no-backup-config",
+        "--no-backup-config", "-B",
         action="store_false",
         dest="backup_config",
         help="""by default, original configuration files and directories
@@ -603,7 +603,7 @@ def parse_args():
              """,
     )
     install_parser.add_argument(
-        "--no-install-pkg",
+        "--no-install-pkg", "-I",
         action="store_false",
         dest="install_pkg",
         help="""skip package installation step. Useful e.g. when only config
