@@ -1,4 +1,4 @@
-- source: xsession
-  target: ~/.xsession
+- source: xprofile
+  target: ~/.xprofile
 - source: Xresources
   target: ~/.Xresources
