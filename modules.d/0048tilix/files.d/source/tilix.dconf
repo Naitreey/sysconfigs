@@ -18,14 +18,17 @@ dim-transparency-percent=0
 custom-hyperlinks=['^([a-zA-Z0-9\\-\\_\\/\\.]+)\\/([a-zA-Z0-9\\-\\_\\.]+)$,gvim $0,false']
 
 [keybindings]
-session-resize-terminal-left='<Shift><Alt>h'
-session-switch-to-terminal-down='<Alt>j'
-session-resize-terminal-up='<Shift><Alt>k'
-session-resize-terminal-down='<Shift><Alt>j'
-session-switch-to-terminal-right='<Alt>l'
-session-switch-to-terminal-up='<Alt>k'
-session-resize-terminal-right='<Shift><Alt>l'
-session-switch-to-terminal-left='<Alt>h'
+terminal-find='<Primary><Shift>f'
+session-resize-terminal-left='<Primary><Shift>h'
+session-switch-to-terminal-down='<Primary><Alt>j'
+session-resize-terminal-up='<Primary><Shift>k'
+session-resize-terminal-down='<Primary><Shift>j'
+session-switch-to-terminal-right='<Primary><Alt>l'
+terminal-find-next='<Primary>slash'
+session-switch-to-terminal-up='<Primary><Alt>k'
+session-resize-terminal-right='<Primary><Shift>l'
+terminal-find-previous='<Primary>question'
+session-switch-to-terminal-left='<Primary><Alt>h'
 
 [/]
 recent-session-files=['/tmp/f.json']
