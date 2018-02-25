@@ -28,3 +28,6 @@
 [submodule "modules.d/0004fonts/files.d/source/powerline-fonts"]
 	path = modules.d/0004fonts/files.d/source/powerline-fonts
 	url = https://github.com/powerline/fonts.git
+[submodule "modules.d/0040AUR/files.d/source/spotify"]
+	path = modules.d/0040AUR/files.d/source/spotify
+	url = https://aur.archlinux.org/spotify.git
