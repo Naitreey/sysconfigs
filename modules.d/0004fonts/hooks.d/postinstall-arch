@@ -12,3 +12,5 @@ sudo sed -i -e 's/^#export FREETYPE_PROPERTIES/export FREETYPE_PROPERTIES/' /etc
 
 # refresh cache
 fc-cache -f -v
+mkfontdir ~/.fonts
+mkfontscale ~/.fonts

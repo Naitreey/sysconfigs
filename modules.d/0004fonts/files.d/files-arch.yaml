@@ -1,6 +1,20 @@
-- source: fonts
-  target: ~/.fonts
 - source: local.conf
   target: /etc/fonts/local.conf
   copy: true
   asroot: true
+- source: powerline-fonts/DejaVuSansMono/DejaVu Sans Mono Bold Oblique for Powerline.ttf
+  target: ~/.fonts/DejaVu Sans Mono Bold Oblique for Powerline.ttf
+- source: powerline-fonts/DejaVuSansMono/DejaVu Sans Mono Bold for Powerline.ttf
+  target: ~/.fonts/DejaVu Sans Mono Bold for Powerline.ttf
+- source: powerline-fonts/DejaVuSansMono/DejaVu Sans Mono Oblique for Powerline.ttf
+  target: ~/.fonts/DejaVu Sans Mono Oblique for Powerline.ttf
+- source: powerline-fonts/DejaVuSansMono/DejaVu Sans Mono for Powerline.ttf
+  target: ~/.fonts/DejaVu Sans Mono for Powerline.ttf
+- source: powerline-fonts/UbuntuMono/Ubuntu Mono derivative Powerline Bold Italic.ttf
+  target: ~/.fonts/Ubuntu Mono derivative Powerline Bold Italic.ttf
+- source: powerline-fonts/UbuntuMono/Ubuntu Mono derivative Powerline Bold.ttf
+  target: ~/.fonts/Ubuntu Mono derivative Powerline Bold.ttf
+- source: powerline-fonts/UbuntuMono/Ubuntu Mono derivative Powerline Italic.ttf
+  target: ~/.fonts/Ubuntu Mono derivative Powerline Italic.ttf
+- source: powerline-fonts/UbuntuMono/Ubuntu Mono derivative Powerline.ttf
+  target: ~/.fonts/Ubuntu Mono derivative Powerline.ttf
