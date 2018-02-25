@@ -1,0 +1,2 @@
+- source: powerline
+  target: ~/.config/powerline

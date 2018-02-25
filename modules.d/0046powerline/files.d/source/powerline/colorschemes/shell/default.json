@@ -1,0 +1,5 @@
+{
+    "groups": {
+        "prompt": {"fg": "brightgreen", "bg": "materialbg", "attrs": ["bold"]}
+    }
+}
