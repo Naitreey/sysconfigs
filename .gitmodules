@@ -25,3 +25,6 @@
 [submodule "modules.d/0040AUR/files.d/source/ttf-font-awesome-4"]
 	path = modules.d/0040AUR/files.d/source/ttf-font-awesome-4
 	url = https://aur.archlinux.org/ttf-font-awesome-4.git
+[submodule "modules.d/0004fonts/files.d/source/powerline-fonts"]
+	path = modules.d/0004fonts/files.d/source/powerline-fonts
+	url = https://github.com/powerline/fonts.git
