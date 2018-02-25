@@ -31,3 +31,9 @@
 [submodule "modules.d/0040AUR/files.d/source/spotify"]
 	path = modules.d/0040AUR/files.d/source/spotify
 	url = https://aur.archlinux.org/spotify.git
+[submodule "modules.d/0040AUR/files.d/source/tilix-bin"]
+	path = modules.d/0040AUR/files.d/source/tilix-bin
+	url = https://aur.archlinux.org/tilix-bin.git
+[submodule "modules.d/0040AUR/files.d/source/vte3-tilix"]
+	path = modules.d/0040AUR/files.d/source/vte3-tilix
+	url = https://aur.archlinux.org/vte3-tilix.git
