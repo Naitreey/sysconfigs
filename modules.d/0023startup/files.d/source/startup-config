@@ -2,6 +2,21 @@
 import sys
 import re
 from subprocess import run, PIPE
+from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
+
+def parse_args():
+    parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
+    parser.add_argument(
+        "--enable-trackpad", "-t",
+        action="store_true",
+        help="enable trackpad.",
+    )
+    parser.add_argument(
+        "--mouse-speed", "-m",
+        default="-0.9",
+        help="set mouse pointer speed.",
+    )
+    return parser.parse_args()
 
 def get_device_id(device_pattern):
     pattern = re.compile(device_pattern, re.IGNORECASE)
@@ -16,29 +31,37 @@ def get_device_id(device_pattern):
     else:
         raise DeviceNotFound(f"device of pattern {device_pattern} not found")
 
-def setup_mouse():
+def setup_mouse(speed):
     try:
         mouse_id = get_device_id("Mouse")
     except DeviceNotFound:
         print("mouse not found", file=sys.stderr)
         return
     run(["xinput", "--set-prop", str(mouse_id),
-         "libinput Accel Speed", "-0.9"], check=True)
+         "libinput Accel Speed", speed], check=True)
 
-def setup_trackpad():
+def setup_trackpad(enable):
     try:
         trackpad_id = get_device_id(r"GlidePoint|TouchPad")
     except DeviceNotFound:
         print("trackpad not found", file=sys.stderr)
         return
-    run(["xinput", "--set-prop", str(trackpad_id),
-         "libinput Tapping Enabled", "1"], check=True)
-    run(["xinput", "--set-prop", str(trackpad_id),
-         "libinput Natural Scrolling Enabled", "1"], check=True)
+    if enable:
+        run(["xinput", "--enable", str(trackpad_id)], check=True)
+        run(["xinput", "--set-prop", str(trackpad_id),
+             "libinput Tapping Enabled", "1"], check=True)
+        run(["xinput", "--set-prop", str(trackpad_id),
+             "libinput Natural Scrolling Enabled", "1"], check=True)
+    else:
+        run(["xinput", "--disable", str(trackpad_id)], check=True)
+
+def main():
+    args = parse_args()
+    setup_trackpad(enable=args.enable_trackpad)
+    setup_mouse(speed=args.mouse_speed)
 
 class DeviceNotFound(Exception):
     pass
 
 if __name__ == "__main__":
-    setup_mouse()
-    setup_trackpad()
+    main()
