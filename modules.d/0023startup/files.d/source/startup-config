@@ -16,6 +16,10 @@ def parse_args():
         default="-0.9",
         help="set mouse pointer speed.",
     )
+    parser.add_argument(
+        "--capslock", "-c",
+        help="Re-map CapsLock to other key symbol.",
+    )
     return parser.parse_args()
 
 def get_device_id(device_pattern):
@@ -55,10 +59,30 @@ def setup_trackpad(enable):
     else:
         run(["xinput", "--disable", str(trackpad_id)], check=True)
 
+def setup_keyboard(capslock=None):
+    if capslock is None:
+        # auto detect keyboard type
+        lsusb_output = run(
+            ["lsusb"],
+            stdout=PIPE,
+            check=True,
+            encoding="utf-8",
+        ).stdout
+        if "Topre" in lsusb_output:
+            capslock = "ctrl"
+        else:
+            capslock = "capslock"
+    if capslock == "ctrl":
+        run(["setxkbmap", "-option", "caps:ctrl_modifier"], check=True)
+    elif capslock == "capslock":
+        # reset settings
+        run(["setxkbmap", "-option"], check=True)
+
 def main():
     args = parse_args()
     setup_trackpad(enable=args.enable_trackpad)
     setup_mouse(speed=args.mouse_speed)
+    setup_keyboard(capslock=args.capslock)
 
 class DeviceNotFound(Exception):
     pass
