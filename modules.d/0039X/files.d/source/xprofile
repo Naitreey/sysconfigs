@@ -1,3 +1,4 @@
 # vim:ft=sh
 # let user bins visible to X
 export PATH=$HOME/bin:$HOME/.local/bin:$PATH
+export TERMINAL=tilix
