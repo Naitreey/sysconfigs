@@ -1,7 +1,6 @@
 #!/bin/bash -e
 declare -r usage="Usage: [BLOCK_BUTTON={1|4|5}] $0 [up|down|toggle-mute]"
 
-declare -r step=5
 declare -r signame=RTMIN+1
 
 get_volume() {
@@ -52,6 +51,7 @@ if [[ $1 ]] || [[ $BLOCK_BUTTON ]]; then
     if [[ $1 ]]; then
         declare signal=True
     fi
+    declare -r step=${2:-5}
 fi
 
 if [[ $operation ]]; then
