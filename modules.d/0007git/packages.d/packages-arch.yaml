@@ -1,3 +1,6 @@
 - git
 - git-annex
 - bup
+- libgnome-keyring
+- gnome-keyring
+- glib2

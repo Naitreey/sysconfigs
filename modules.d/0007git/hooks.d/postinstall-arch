@@ -1,0 +1,3 @@
+#!/bin/bash -e
+cd /usr/share/git/credential/gnome-keyring
+sudo make
