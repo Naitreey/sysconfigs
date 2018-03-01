@@ -1,4 +1,7 @@
 # vim:ft=sh
 # let user bins visible to X
 export PATH=$HOME/bin:$HOME/.local/bin:$PATH
+# default terminal emulator
 export TERMINAL=tilix
+# for correct qt5 application theme
+export XDG_CURRENT_DESKTOP=KDE
