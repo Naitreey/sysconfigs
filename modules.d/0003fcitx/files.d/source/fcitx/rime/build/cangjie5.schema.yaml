@@ -2,10 +2,10 @@ __build_info:
   rime_version: 1.2.10
   timestamps:
     cangjie5.custom: 0
-    cangjie5.schema: 1519613617
+    cangjie5.schema: 1502624260
     default: 1475247145
-    default.custom: 1519613617
-    symbols: 1519613617
+    default.custom: 1502595027
+    symbols: 1502624260
     symbols.custom: 0
 abc_segmentor:
   extra_tags:

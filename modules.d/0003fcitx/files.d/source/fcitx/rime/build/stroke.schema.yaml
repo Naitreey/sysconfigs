@@ -2,9 +2,9 @@ __build_info:
   rime_version: 1.2.10
   timestamps:
     default: 1475247145
-    default.custom: 1519613617
+    default.custom: 1502595027
     stroke.custom: 0
-    stroke.schema: 1519613617
+    stroke.schema: 1502595027
 abc_segmentor:
   extra_tags:
     - reverse_lookup

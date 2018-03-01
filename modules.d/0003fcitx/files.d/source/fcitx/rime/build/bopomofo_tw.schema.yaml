@@ -2,9 +2,9 @@ __build_info:
   rime_version: 1.2.10
   timestamps:
     bopomofo_tw.custom: 0
-    bopomofo_tw.schema: 1519613617
+    bopomofo_tw.schema: 1502624260
     default: 1475247145
-    default.custom: 1519613617
+    default.custom: 1502595027
 custom_phrase:
   db_class: stabledb
   dictionary: ""

@@ -2,10 +2,10 @@ __build_info:
   rime_version: 1.2.10
   timestamps:
     default: 1475247145
-    default.custom: 1519613617
+    default.custom: 1502595027
     luna_pinyin_fluency.custom: 0
-    luna_pinyin_fluency.schema: 1519613617
-    symbols: 1519613617
+    luna_pinyin_fluency.schema: 1502624260
+    symbols: 1502624260
     symbols.custom: 0
 custom_phrase:
   db_class: stabledb
