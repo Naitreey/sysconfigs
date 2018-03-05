@@ -1,21 +1,9 @@
 #!/bin/bash
-declare disabled=False
-
-# wait xautolock start
+# wait auto lock program start
 sleep 1
 
 while true; do
-    # active audio input, disable xautolock
-    if [[ $(pactl list sink-inputs) ]]; then
-        if [[ $disabled == False ]]; then
-            xautolock -disable
-            disabled=True
-        fi
-    else
-        if [[ $disabled != False ]]; then
-            xautolock -enable
-            disabled=False
-        fi
-    fi
+    # active audio input, reset lock
+    [[ $(pactl list sink-inputs) ]] && killall -USR1 xss-lock
     sleep 60
 done

@@ -3,7 +3,7 @@
 lock() {
     declare screenshot=/tmp/lock_screen.png
     scrot --exec "mogrify -scale 10% -scale 1000% $screenshot" "$screenshot"
-    i3lock --image "$screenshot" --show-failed-attempts
+    i3lock --image "$screenshot" --show-failed-attempts "$@"
 }
 
 logout() {
@@ -12,11 +12,11 @@ logout() {
 
 suspend() {
     # device configs are somehow lost during wakeup, hence re-configure
-    lock && systemctl suspend
+    systemctl suspend
 }
 
 hibernate() {
-    lock && systemctl hibernate
+    systemctl hibernate
 }
 
 reboot() {
@@ -29,7 +29,9 @@ poweroff() {
 
 case "$1" in
     lock|logout|suspend|hibernate|reboot|poweroff)
-        $1
+        declare cmd=$1
+        shift
+        $cmd "$@"
         ;;
     *)
         echo "Usage: $0 {lock|logout|suspend|hibernate|reboot|poweroff}"

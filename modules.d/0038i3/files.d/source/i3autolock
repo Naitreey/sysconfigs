@@ -1,7 +1,9 @@
 #!/bin/bash
 pkill -f i3activity-detect
+# inactivity timeout 5min, with 10s delay
+declare timeout=300
+declare delay=10
+xset s $timeout $delay
 i3activity-detect &
-exec xautolock -time 5 -locker "~/bin/i3exit lock" \
-        -notify 10 \
-        -notifier "notify-send --urgency=low 'Screen Lock' 'Screen will be locked in 10 seconds.'" \
-        -detectsleep
+exec xss-lock -n "notify-send --urgency=low 'Screen Lock' 'Screen will be locked in "$delay" seconds.'" \
+        -- i3exit lock --nofork
