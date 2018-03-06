@@ -138,7 +138,7 @@ class MyStuff(Repo):
         for file in untracked:
             p = Path(self.working_dir, file)
             # skip untracked git repo
-            if p.is_dir() and (p/".git").is_dir():
+            if p.is_dir() and (p/".git").exists():
                 continue
             else:
                 raise UntrackedFileError(f"{relpath(p)!s}")
