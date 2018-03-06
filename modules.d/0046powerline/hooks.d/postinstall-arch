@@ -1,2 +1,3 @@
 #!/bin/bash -e
+pip3 install --user powerline-gitstatus
 systemctl --user --now enable powerline-daemon
