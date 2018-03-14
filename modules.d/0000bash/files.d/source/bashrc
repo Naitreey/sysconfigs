@@ -190,6 +190,7 @@ alias rm='rm -i'
 cd() {
     if [ $# -eq 0 ]; then
         builtin cd
+        return $?
     fi
     if [ -e "$(readlink -e "${!#}")" ]; then
         builtin cd "$@"
