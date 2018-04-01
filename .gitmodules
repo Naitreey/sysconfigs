@@ -37,3 +37,6 @@
 [submodule "modules.d/0040AUR/files.d/source/vte3-tilix"]
 	path = modules.d/0040AUR/files.d/source/vte3-tilix
 	url = https://aur.archlinux.org/vte3-tilix.git
+[submodule "modules.d/0040AUR/files.d/source/rofi-greenclip"]
+	path = modules.d/0040AUR/files.d/source/rofi-greenclip
+	url = https://aur.archlinux.org/rofi-greenclip.git
