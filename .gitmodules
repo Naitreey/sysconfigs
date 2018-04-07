@@ -40,3 +40,6 @@
 [submodule "modules.d/0040AUR/files.d/source/rofi-greenclip"]
 	path = modules.d/0040AUR/files.d/source/rofi-greenclip
 	url = https://aur.archlinux.org/rofi-greenclip.git
+[submodule "modules.d/0040AUR/files.d/source/masterpdfeditor"]
+	path = modules.d/0040AUR/files.d/source/masterpdfeditor
+	url = https://aur.archlinux.org/masterpdfeditor.git
