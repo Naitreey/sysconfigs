@@ -4,4 +4,5 @@
 - xorg-xinput
 - xorg-xrandr
 - xorg-xbacklight
+- xorg-xprop
 - xclip
