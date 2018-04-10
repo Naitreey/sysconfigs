@@ -1,2 +1,6 @@
 - source: bashrc
   target: ~/.bashrc
+- source: bash_completion
+  target: ~/.bash_completion
+- source: bash_completion.d
+  target: ~/.bash_completion.d
