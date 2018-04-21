@@ -1,0 +1,10 @@
+{
+    "segment_data": {
+        "powerline.segments.common.time.date": {
+            "args": {
+                "istime": false,
+                "format": "%Y-%m-%d %H:%M:%S"
+            }
+        }
+    }
+}

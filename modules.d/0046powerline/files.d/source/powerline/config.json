@@ -4,6 +4,7 @@
     },
     "ext": {
         "shell": {
+            "top_theme": "powerline_terminus",
             "theme": "leftonly"
         }
     }

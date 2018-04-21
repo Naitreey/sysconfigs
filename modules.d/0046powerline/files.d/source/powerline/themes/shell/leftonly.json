@@ -11,6 +11,10 @@
                         "priority": 10
                     },
                     {
+                        "function": "powerline.segments.common.time.date",
+                        "priority": 50
+                    },
+                    {
                         "function": "powerline.segments.common.env.user",
                         "priority": 30
                     },
