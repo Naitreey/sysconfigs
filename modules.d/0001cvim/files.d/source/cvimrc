@@ -18,5 +18,6 @@ imap <C-d> deleteForwardChar
 imap <C-i> editWithVim
 unmap m
 unmap ;
+unmap a
 map m setMark
 let blacklists=["http://crm.jiandan100.cn/"]
