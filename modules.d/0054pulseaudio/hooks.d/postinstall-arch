@@ -1,0 +1,8 @@
+#!/bin/bash -e
+echo "Restarting PulseAudio..."
+# ensure the following fucking environ is set that is required
+# by pulse audio command to succeed...........
+declare -x XDG_RUNTIME_DIR="/run/user/$UID"
+pulseaudio -k
+pulseaudio --start
+echo "Done"

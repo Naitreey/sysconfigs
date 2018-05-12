@@ -1,0 +1,4 @@
+- source: default.pa
+  target: /etc/pulse/default.pa
+  asroot: true
+  copy: true
