@@ -233,6 +233,9 @@ class ConfigModule:
                 return []
         with open(pkgsfile, "r") as f:
             packages = yaml.load(f)
+        # empty file or full of comments
+        if packages is None:
+            return []
         try:
             for p in packages:
                 assert isinstance(p, str)
@@ -249,6 +252,9 @@ class ConfigModule:
                 return []
         with open(filesfile, "r") as f:
             files = yaml.load(f)
+        # empty file or full of comments
+        if files is None:
+            return []
         try:
             for config in files:
                 assert isinstance(config['source'], str)
