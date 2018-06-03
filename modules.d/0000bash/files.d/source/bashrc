@@ -179,6 +179,8 @@ _latest_py_version=$(pyenv versions --bare --skip-aliases | sort | head -1)
 pyenv shell $_latest_py_version && unset _latest_py_version
 # autojump
 [[ -s /home/naitree/.autojump/etc/profile.d/autojump.sh ]] && source /home/naitree/.autojump/etc/profile.d/autojump.sh
+# thefuck
+eval $(thefuck --alias f)
 
 # do not include `-pedantic`, it warns casting from (void*) to function pointer
 # export this variable to environ, so as to be used in makefile
