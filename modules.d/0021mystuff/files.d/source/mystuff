@@ -85,6 +85,9 @@ def colored_git(func):
 def print_msg(msg, level=0):
     print(indent(msg, prefix="  "*level), end="")
 
+def print_warning(warning):
+    print(f"Warning: {warning}", file=sys.stderr)
+
 def title(line):
     print_msg(f"*** {line} ***\n", level=0)
 
@@ -164,6 +167,10 @@ class MyStuff(Repo):
         return not url_scheme or url_scheme == "file"
 
     def _is_ignored_submodule(self, sm):
+        # skip uninitialized module with a warning
+        if not sm.module_exists():
+            print_warning(f"Submodule {sm.path} is not initialized, skipping...")
+            return True
         # assume local submodules are mine
         if self._remote_is_local(sm.url):
             return False
