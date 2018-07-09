@@ -167,16 +167,17 @@ class MyStuff(Repo):
         return not url_scheme or url_scheme == "file"
 
     def _is_ignored_submodule(self, sm):
-        # skip uninitialized module with a warning
-        if not sm.module_exists():
-            print_warning(f"Submodule {sm.path} is not initialized, skipping...")
-            return True
-        # assume local submodules are mine
-        if self._remote_is_local(sm.url):
-            return False
-        # assume remote submodules with my name in its url are mine
-        elif "naitreey" in sm.url.lower():
-            return False
+        # assume local submodules and remote submodules with my name in its url
+        # are mine
+        if self._remote_is_local(sm.url) or "naitreey" in sm.url.lower():
+            # skip uninitialized module with a warning
+            if sm.module_exists():
+                return False
+            else:
+                print_warning(
+                    f"Submodule {sm.path} is not initialized, skipping..."
+                )
+                return True
         # otherwise it's not mine
         else:
             return True
