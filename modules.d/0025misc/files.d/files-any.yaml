@@ -4,3 +4,5 @@
   target: ~/bin/ss-run
 - source: codegrep
   target: ~/bin/codegrep
+- source: time-to-sleep
+  target: ~/bin/time-to-sleep
