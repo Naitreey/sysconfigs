@@ -46,3 +46,6 @@
 [submodule "modules.d/0040AUR/files.d/source/chromedriver"]
 	path = modules.d/0040AUR/files.d/source/chromedriver
 	url = https://aur.archlinux.org/chromedriver.git
+[submodule "modules.d/0040AUR/files.d/source/direnv"]
+	path = modules.d/0040AUR/files.d/source/direnv
+	url = https://aur.archlinux.org/direnv.git
