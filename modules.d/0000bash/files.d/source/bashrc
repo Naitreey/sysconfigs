@@ -135,8 +135,9 @@ if [[ $(tty) == *pts* ]]; then
     # prompt: user:n:(branch)$
     #PS1='\[\e]2;\h@\w\a\e[33;1m\]\u:$(__jobnums)\[\e[30;1m\]$(__git_ps1 "(%s)")\[\e[33;1m\]$ \[\e[0m\]'
     # powerline configs
-    POWERLINE_BASH_CONTINUATION=1
-    POWERLINE_BASH_SELECT=1
+    # disable PS2 PS3 modification to speed up
+    #POWERLINE_BASH_CONTINUATION=0
+    #POWERLINE_BASH_SELECT=0
     . /usr/lib/python3.6/site-packages/powerline/bindings/bash/powerline.sh
 else
     # keep only the last two components of pathname
