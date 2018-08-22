@@ -63,10 +63,14 @@ class FocusController:
         if data == b'switch':
             with self.window_list_lock:
                 tree = self.i3sub.i3.get_tree()
+                focused_window = tree.find_focused()
+                current_workspace_id = focused_window.workspace().id
                 windows = set(w.id for w in tree.leaves())
-                for window_id in self.window_list[1:]:
-                    if window_id not in windows:
-                        self.window_list.remove(window_id)
+                for window in self.window_list[1:]:
+                    workspace_id, window_id = window
+                    if (window_id not in windows
+                            or current_workspace_id != workspace_id):
+                        self.window_list.remove(window)
                     else:
                         self.i3sub.i3.command('[con_id=%s] focus' % window_id)
                         break
@@ -92,10 +96,12 @@ class FocusController:
 
     def handler(self, i3conn, i3event):
         with self.window_list_lock:
-            window_id = i3event.container.props.id
-            if window_id in self.window_list:
-                self.window_list.remove(window_id)
-            self.window_list.insert(0, window_id)
+            window_id = i3event.container.id
+            workspace_id = self.i3sub.i3.get_tree().find_focused().workspace().id
+            window = (workspace_id, window_id)
+            if window in self.window_list:
+                self.window_list.remove(window)
+            self.window_list.insert(0, window)
             if len(self.window_list) > MAX_WIN_HISTORY:
                 del self.window_list[MAX_WIN_HISTORY:]
 
