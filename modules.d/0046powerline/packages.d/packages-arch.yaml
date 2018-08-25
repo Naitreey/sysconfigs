@@ -1,3 +1,6 @@
 - python-psutil
 - python-pygit2
 - python-hglib
+- powerline
+- powerline-fonts
+- powerline-vim
