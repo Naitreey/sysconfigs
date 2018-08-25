@@ -2,4 +2,4 @@ gitpython
 ipython
 mycli
 i3ipc
-powerline_gitstatus
+powerline-gitstatus
