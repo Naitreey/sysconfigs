@@ -20,8 +20,23 @@ function s:CacheRstFold()
     let self.levels[curline] = self.header_types[key]
   endfunction
   let save_cursor = getcurpos()
+  " save [ mark
+  let l:save_mark = ""
+  redir => l:save_mark
+    try
+      silent! marks [
+    catch
+    endtry
+  redir END
+  if l:save_mark != ""
+    let l:save_mark = split(split(l:save_mark, "\n")[1])[1]
+  endif
   silent keeppatterns %s/\v^%(%(([=`:.'"~^_*+#-])\1+\n)?.{1,2}\n([=`:.'"~^_*+#-])\2+)|%(%(([=`:.''"~^_*+#-])\3{2,}\n)?.{3,}\n([=`:.''"~^_*+#-])\4{2,})$/\=closure.Process(submatch(0))/gn
   call setpos('.', save_cursor)
+  " restore [ mark
+  if l:save_mark != ""
+    execute l:save_mark . 'mark ['
+  endif
   let b:RstFoldCache = closure.levels
 endfunction
 
