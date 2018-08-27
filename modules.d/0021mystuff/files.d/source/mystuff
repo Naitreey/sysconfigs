@@ -270,7 +270,7 @@ class MyStuff(Repo):
                 for diff in self.index.diff(other=None):
                     if diff.change_type == "M" and diff.a_mode == MODE_SUBMODULE:
                         sm = self.submodule(diff.a_path)
-                        subsubsection(sm.path)
+                        subsubsection(f"{sm.path}\n")
                         sm.update(recursive=True, init=True)
 
     def _push_local_changes(self, tracking_branch):
