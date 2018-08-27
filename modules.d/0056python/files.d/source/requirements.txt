@@ -1,5 +1,10 @@
+# utils
 gitpython
 ipython
 mycli
+# i3wm
 i3ipc
+# powerline plugin
 powerline-gitstatus
+# jupyter
+jupyter
