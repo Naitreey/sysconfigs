@@ -30,6 +30,9 @@ import sys
 
 from git import Repo, GitCommandError, Actor
 
+# 0o160000 is gitlink, which is used by submodule object
+MODE_SUBMODULE = 0o160000
+
 def setup_stdout():
     # re-assign stdout to io object which does not impose 'strict'
     # encoding error handling. backslashreplace error handler is used
@@ -148,16 +151,15 @@ class MyStuff(Repo):
 
     def _check_index(self):
         for diff in self.index.diff(self.head.commit):
-            if diff.a_mode == 0o160000:
+            if diff.a_mode == MODE_SUBMODULE:
                 continue
             else:
                 raise DirtyIndex(f"{relpath(self.working_dir)}")
 
     def _check_working_tree(self):
         for diff in self.index.diff(other=None):
-            # 0o160000 is gitlink, which is used by submodule object
             # skip modified submodule object
-            if diff.a_mode == 0o160000:
+            if diff.a_mode == MODE_SUBMODULE:
                 continue
             else:
                 raise DirtyWorkingTree(f"{relpath(self.working_dir)}")
@@ -262,6 +264,14 @@ class MyStuff(Repo):
                 except CalledProcessError:
                     subsubsection("error in updating submodule urls, terminating...\n")
                     raise
+                # Checkout new commits from submodules,
+                # Only for submodules that has been already initialized
+                subsubtitle("Updating recorded commits for submodules:")
+                for diff in self.index.diff(other=None):
+                    if diff.change_type == "M" and diff.a_mode == MODE_SUBMODULE:
+                        sm = self.submodule(diff.a_path)
+                        subsubsection(sm.path)
+                        sm.update(recursive=True, init=True)
 
     def _push_local_changes(self, tracking_branch):
         remote_repo, remote_branch = tracking_branch.split("/")
