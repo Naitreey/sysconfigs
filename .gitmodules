@@ -19,9 +19,6 @@
 [submodule "modules.d/0040AUR/files.d/source/mysql"]
 	path = modules.d/0040AUR/files.d/source/mysql
 	url = https://aur.archlinux.org/mysql.git
-[submodule "modules.d/0040AUR/files.d/source/python-powerline-git"]
-	path = modules.d/0040AUR/files.d/source/python-powerline-git
-	url = https://aur.archlinux.org/python-powerline-git.git
 [submodule "modules.d/0040AUR/files.d/source/ttf-font-awesome-4"]
 	path = modules.d/0040AUR/files.d/source/ttf-font-awesome-4
 	url = https://aur.archlinux.org/ttf-font-awesome-4.git

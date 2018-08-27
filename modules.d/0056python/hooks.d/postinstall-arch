@@ -1,0 +1,4 @@
+#!/bin/bash
+root=$(dirname "$(readlink -e "$0")")
+requirements=$root/../files.d/source/requirements.txt
+pip3 install --user -r "$requirements"
