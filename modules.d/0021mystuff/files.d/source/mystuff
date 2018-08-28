@@ -267,9 +267,10 @@ class MyStuff(Repo):
                 # Checkout new commits from submodules,
                 # Only for submodules that has been already initialized
                 subsubtitle("Updating recorded commits for submodules:")
+                path2name = {sm.path: sm.name for sm in self.submodules}
                 for diff in self.index.diff(other=None):
                     if diff.change_type == "M" and diff.a_mode == MODE_SUBMODULE:
-                        sm = self.submodule(diff.a_path)
+                        sm = self.submodule(path2name[diff.a_path])
                         subsubsection(f"{sm.path}\n")
                         sm.update(recursive=True, init=True)
 
