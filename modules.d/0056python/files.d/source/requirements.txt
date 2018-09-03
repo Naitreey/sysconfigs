@@ -2,9 +2,14 @@
 gitpython
 ipython
 mycli
+# math utils
+numpy
+scipy
+matplotlib
+sympy
+# jupyter
+jupyter
 # i3wm
 i3ipc
 # powerline plugin
 powerline-gitstatus
-# jupyter
-jupyter
