@@ -1,0 +1,225 @@
+#!/usr/bin/python
+import sys
+import re
+import math
+import shlex
+import unittest
+import textwrap
+from unittest.mock import patch
+from collections import namedtuple
+from subprocess import run
+
+
+SwapEntry = namedtuple("SwapEntry", ["name", "type", "size", "used", "priority"])
+
+
+class Swap:
+
+    meminfo = "/proc/meminfo"
+    swapinfo = "/proc/swaps"
+    fstab = "/etc/fstab"
+    swap_entry_class = SwapEntry
+    mem_re = re.compile(r"^MemTotal.*?(\d+).*$")
+
+    def __init__(self, filename):
+        self.filename = filename
+        self._size = None
+
+    @property
+    def size(self):
+        if self._size is not None:
+            return self._size
+        for line in self.iter_meminfo():
+            match = self.mem_re.match(line)
+            if match:
+                memsize = match.group(1)
+                break
+        self._size = int(memsize)
+        return self._size
+
+    @property
+    def size_humanized(self):
+        size = self.size//1024
+        if 0 < size < 1024:
+            return "{} MB".format(size if size % 1024 == 0 else size + 1)
+        size = size//1024
+        if 0 < size < 1024:
+            return "{} GB".format(size if size % 1024 == 0 else size + 1)
+        size = size//1024
+        if 0 < size < 1024:
+            return "{} TB".format(size if size % 1024 == 0 else size + 1)
+
+    def iter_meminfo(self):
+        with open(self.meminfo, "r") as f:
+            yield from f
+
+    def create(self):
+        bs = 1024
+        run(shlex.split(
+            f"sudo dd bs={bs} count={self.size} if=/dev/zero of={self.filename}"
+        ))
+        run(shlex.split(
+            f"sudo chmod 0600 {self.filename}"
+        ))
+        run(shlex.split(
+            f"sudo mkswap {self.filename}"
+        ))
+        run(shlex.split(
+            """sudo bash -c 'echo "{}" >>{}'"""
+            .format(self.as_fstab(['defaults', 'discard']), self.fstab)
+        ))
+
+    def activate(self):
+        run(shlex.split(f"sudo swapon {self.filename}"))
+
+    @classmethod
+    def all_swaps(cls):
+        entries = []
+        for line in cls.iter_swaps():
+            name, type, size, used, priority = line.strip().split()
+            entries.append(cls.swap_entry_class(
+                name, type, int(size), int(used), int(priority)
+            ))
+        return entries
+
+    @classmethod
+    def iter_swaps(cls):
+        with open(cls.swapinfo, "r") as f:
+            # skip first line
+            f.readline()
+            yield from f
+
+    def as_fstab(self, options=None):
+        return "{} none swap {} 0 0".format(
+            self.filename,
+            ",".join(options or ["defaults"])
+        )
+
+
+def main():
+    swapfile = "/swapfile"
+    if Swap.all_swaps():
+        print("Swap file exists, exiting now.")
+    else:
+        swap = Swap(swapfile)
+        print(f"Creating swap {swap.filename}, size: {swap.size}")
+        swap.create()
+        swap.activate()
+    return 0
+
+
+class SwapTest(unittest.TestCase):
+
+    meminfo_fixture = textwrap.dedent(
+        """\
+        MemTotal:       32877404 kB
+        MemFree:        24989888 kB
+        MemAvailable:   27948156 kB
+        Buffers:          521488 kB
+        Cached:          2611064 kB
+        SwapCached:        32340 kB
+        Active:          4537336 kB
+        Inactive:        2037364 kB
+        Active(anon):    3378576 kB
+        Inactive(anon):    89860 kB
+        Active(file):    1158760 kB
+        Inactive(file):  1947504 kB
+        Unevictable:         604 kB
+        Mlocked:             604 kB
+        SwapTotal:      33554428 kB
+        SwapFree:       33254516 kB
+        Dirty:               208 kB
+        Writeback:             0 kB
+        AnonPages:       3436700 kB
+        Mapped:           602616 kB
+        Shmem:             26288 kB
+        Slab:             527672 kB
+        SReclaimable:     318820 kB
+        SUnreclaim:       208852 kB
+        KernelStack:       20592 kB
+        PageTables:        74552 kB
+        NFS_Unstable:          0 kB
+        Bounce:                0 kB
+        WritebackTmp:          0 kB
+        CommitLimit:    49993128 kB
+        Committed_AS:   17224104 kB
+        VmallocTotal:   34359738367 kB
+        VmallocUsed:           0 kB
+        VmallocChunk:          0 kB
+        HardwareCorrupted:     0 kB
+        AnonHugePages:         0 kB
+        ShmemHugePages:        0 kB
+        ShmemPmdMapped:        0 kB
+        HugePages_Total:       0
+        HugePages_Free:        0
+        HugePages_Rsvd:        0
+        HugePages_Surp:        0
+        Hugepagesize:       2048 kB
+        Hugetlb:               0 kB
+        DirectMap4k:    12072984 kB
+        DirectMap2M:    20367360 kB
+        DirectMap1G:     1048576 kB
+        """
+    )
+    swapinfo_fixture = textwrap.dedent(
+        """\
+        Filename\t\t\t\tType\t\tSize\tUsed\tPriority
+        /swapfile                               file\t\t33554428\t299912\t-2
+        /dev/swap                               device\t\t33554428\t299912\t-2
+        """
+    )
+
+    @patch.object(Swap, "iter_meminfo")
+    def test_memory_size(self, mock_iter_meminfo):
+        mock_iter_meminfo.return_value = \
+            self.meminfo_fixture.splitlines(keepends=True)
+        self.assertEqual(Swap("/fake").size, 32877404)
+        mock_iter_meminfo.assert_called_once()
+
+    @patch.object(Swap, "iter_meminfo")
+    def test_memory_size_humanized(self, mock_iter_meminfo):
+        mock_iter_meminfo.return_value = \
+            self.meminfo_fixture.splitlines(keepends=True)
+        self.assertEqual(Swap("/fake").size_humanized, "32 GB")
+        mock_iter_meminfo.assert_called_once()
+
+    @patch.object(Swap, "iter_meminfo")
+    def test_memory_size_is_cached(self, mock_iter_meminfo):
+        mock_iter_meminfo.return_value = \
+            self.meminfo_fixture.splitlines(keepends=True)
+        swap = Swap("/fake")
+        swap.size
+        swap.size
+        mock_iter_meminfo.assert_called_once()
+
+    @patch.object(Swap, "iter_swaps")
+    def test_all_swaps(self, mock_iter_swaps):
+        mock_iter_swaps.return_value = \
+            self.swapinfo_fixture.splitlines(keepends=True)[1:]
+        self.assertEqual(
+            Swap.all_swaps(),
+            [("/swapfile", "file", 33554428, 299912, -2),
+             ("/dev/swap", "device", 33554428, 299912, -2)]
+        )
+        mock_iter_swaps.assert_called_once()
+
+    def test_as_fstab_with_option(self):
+        swap = Swap("/fake")
+        self.assertEqual(
+            swap.as_fstab(["defaults", "discard"]),
+            "/fake none swap defaults,discard 0 0",
+        )
+
+    def test_as_fstab_without_option(self):
+        swap = Swap("/fake")
+        self.assertEqual(
+            swap.as_fstab(),
+            "/fake none swap defaults 0 0",
+        )
+
+if __name__ == "__main__":
+    if sys.argv[1] == "test":
+        sys.argv.pop()
+        unittest.main()
+    else:
+        sys.exit(main())
