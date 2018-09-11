@@ -218,7 +218,7 @@ class SwapTest(unittest.TestCase):
         )
 
 if __name__ == "__main__":
-    if sys.argv[1] == "test":
+    if "test" in sys.argv:
         sys.argv.pop()
         unittest.main()
     else:
