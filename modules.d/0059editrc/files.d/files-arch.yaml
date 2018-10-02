@@ -1,0 +1,2 @@
+- source: editrc
+  target: ~/.editrc
