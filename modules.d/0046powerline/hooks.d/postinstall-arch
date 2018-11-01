@@ -1,4 +1,5 @@
 #!/bin/bash -e
 pip3 install --user powerline-gitstatus
+mkdir -p ~/.config/systemd/user
 cp /usr/lib/python3.?/site-packages/powerline/dist/systemd/powerline-daemon.service ~/.config/systemd/user/powerline-daemon.service
 systemctl --user --now enable powerline-daemon
