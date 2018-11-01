@@ -1,3 +1,0 @@
-#!/bin/bash -e
-grep -Ee '^!includedir /etc/mysql/conf.d' /etc/mysql/my.cnf ||
-    sudo bash -c "echo '!includedir /etc/mysql/conf.d' >>/etc/mysql/my.cnf"
