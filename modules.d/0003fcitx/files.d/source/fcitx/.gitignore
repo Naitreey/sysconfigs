@@ -3,4 +3,11 @@
 /dbus
 /log
 /rime/sync
+/rime/luna_pinyin.userdb.kct
 /rime/luna_pinyin.userdb.kct.wal
+/cached_layout
+/profile
+/rime/installation.yaml
+/rime/trash
+/rime/user.yaml
+/rime/build
