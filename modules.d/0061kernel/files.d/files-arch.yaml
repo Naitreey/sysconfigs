@@ -1,0 +1,4 @@
+- source: nobeep.conf
+  target: /etc/modprobe.d/nobeep.conf
+  asroot: true
+  copy: true
