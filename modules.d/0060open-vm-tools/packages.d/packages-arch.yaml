@@ -1,0 +1,4 @@
+- gtkmm3
+- open-vm-tools
+- xf86-input-vmmouse
+- xf86-video-vmware
