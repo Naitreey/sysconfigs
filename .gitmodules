@@ -16,9 +16,6 @@
 [submodule "modules.d/0040AUR/files.d/source/google-chrome"]
 	path = modules.d/0040AUR/files.d/source/google-chrome
 	url = https://aur.archlinux.org/google-chrome.git
-[submodule "modules.d/0040AUR/files.d/source/mysql"]
-	path = modules.d/0040AUR/files.d/source/mysql
-	url = https://aur.archlinux.org/mysql.git
 [submodule "modules.d/0040AUR/files.d/source/ttf-font-awesome-4"]
 	path = modules.d/0040AUR/files.d/source/ttf-font-awesome-4
 	url = https://aur.archlinux.org/ttf-font-awesome-4.git
@@ -28,15 +25,6 @@
 [submodule "modules.d/0040AUR/files.d/source/spotify"]
 	path = modules.d/0040AUR/files.d/source/spotify
 	url = https://aur.archlinux.org/spotify.git
-[submodule "modules.d/0040AUR/files.d/source/tilix-bin"]
-	path = modules.d/0040AUR/files.d/source/tilix-bin
-	url = https://aur.archlinux.org/tilix-bin.git
-[submodule "modules.d/0040AUR/files.d/source/vte3-tilix"]
-	path = modules.d/0040AUR/files.d/source/vte3-tilix
-	url = https://aur.archlinux.org/vte3-tilix.git
-[submodule "modules.d/0040AUR/files.d/source/rofi-greenclip"]
-	path = modules.d/0040AUR/files.d/source/rofi-greenclip
-	url = https://aur.archlinux.org/rofi-greenclip.git
 [submodule "modules.d/0040AUR/files.d/source/masterpdfeditor"]
 	path = modules.d/0040AUR/files.d/source/masterpdfeditor
 	url = https://aur.archlinux.org/masterpdfeditor.git

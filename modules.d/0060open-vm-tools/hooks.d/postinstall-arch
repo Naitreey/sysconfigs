@@ -1,0 +1,4 @@
+#!/bin/bash -e
+sudo systemctl enable --now vmtoolsd.service
+sudo systemctl enable --now vmware-vmblock-fuse.service
+vmware-toolbox-cmd timesync enable

@@ -1,3 +1,0 @@
-[mysqld]
-# enable LOAD DATA INFILE
-local-infile = on
