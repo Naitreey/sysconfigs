@@ -183,7 +183,7 @@ shopt -s direxpand
 # auto-correct minor spelling errors on filepath tab completion
 shopt -s dirspell
 
-# to enable forward search command with Ctrl-s
+# to prevent fucking with forward search (C-s)
 stty -ixon
 
 # ensure my bin at front of PATH

@@ -1,18 +1,5 @@
 $include /etc/inputrc
 $if mode=emacs
-"\C-x\'": "\'\'\C-b"
-"\C-x`": "``\C-b"
-"\C-x\"": "\"\"\C-b"
-"\C-x{": "{}\C-b"
-"\C-x[": "[]\C-b"
-"\C-x(": "()\C-b"
-"\C-x0": vi-eWord
-"\eF": "\C-x0\C-f"
-"\eB": vi-bWord
-"\C-x1": kill-region
-"\C-x2": set-mark
-"\eD": "\C-x2\eF\C-x1"
-"\eh": backward-kill-word
 # cycle through possible completions
 TAB: menu-complete
 # complete until the end of common prefix before cycling through possible completions
@@ -24,4 +11,19 @@ set show-all-if-unmodified on
 set skip-completed-text on
 # display colors when doing completion as `ls` does
 set colored-stats on
+# fuck off stty key bindings. (stty -a)
+set bind-tty-special-chars off
+"\C-w": kill-region
+"\ew": copy-region-as-kill
+"\eW": unix-word-rubout
+"\C-x\'": "\'\'\C-b"
+"\C-x`": "``\C-b"
+"\C-x\"": "\"\"\C-b"
+"\C-x{": "{}\C-b"
+"\C-x[": "[]\C-b"
+"\C-x(": "()\C-b"
+"\C-x0": vi-eWord
+"\eF": "\C-x0\C-f"
+"\eB": vi-bWord
+"\eD": "\C-\@\eF\C-w"
 $endif
