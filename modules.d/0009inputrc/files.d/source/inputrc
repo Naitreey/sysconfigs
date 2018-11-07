@@ -15,7 +15,7 @@ set colored-stats on
 set bind-tty-special-chars off
 "\C-w": kill-region
 "\ew": copy-region-as-kill
-"\eW": unix-word-rubout
+"\eh": unix-word-rubout
 "\C-x\'": "\'\'\C-b"
 "\C-x`": "``\C-b"
 "\C-x\"": "\"\"\C-b"
