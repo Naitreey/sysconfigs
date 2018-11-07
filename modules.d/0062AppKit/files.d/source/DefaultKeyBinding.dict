@@ -13,6 +13,8 @@ vim:ft=xml
     <string>deleteWordBackward:</string>
     <key>~d</key>
     <string>deleteWordForward:</string>
+    <key>^u</key>
+    <string>deleteToBeginningOfLine:</string>
     <key>~f</key>
     <string>moveWordForward:</string>
     <key>~b</key>
