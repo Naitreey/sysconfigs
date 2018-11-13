@@ -2,8 +2,8 @@
 
 backup() {
     declare bup_dir=$1 storage_dir=$2
-    sudo BUP_DIR=$bup_dir bup index -ux "$storage_dir"
-    sudo BUP_DIR=$bup_dir bup save -n mystuff-backup --strip -9 "$storage_dir"
+    BUP_DIR=$bup_dir bup index -ux "$storage_dir"
+    BUP_DIR=$bup_dir bup save -n mystuff-backup --strip -9 "$storage_dir"
 }
 
 args=$(getopt --name "$0" --options b:h --longoptions bup-dir:,help -- "$@") || exit $?
