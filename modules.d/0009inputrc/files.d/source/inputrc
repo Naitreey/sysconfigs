@@ -13,9 +13,9 @@ set skip-completed-text on
 set colored-stats on
 # fuck off stty key bindings. (stty -a)
 set bind-tty-special-chars off
-"\C-w": kill-region
-"\ew": copy-region-as-kill
-"\eh": unix-word-rubout
+"\C-w": unix-word-rubout
+"\eh": kill-region
+"\eH": copy-region-as-kill
 "\C-x\'": "\'\'\C-b"
 "\C-x`": "``\C-b"
 "\C-x\"": "\"\"\C-b"
