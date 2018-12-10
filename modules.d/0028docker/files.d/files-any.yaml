@@ -2,3 +2,5 @@
   target: /etc/systemd/system/docker.service.d/http-proxy.conf
   copy: true
   asroot: true
+- source: config.json
+  target: ~/.docker/config.json
