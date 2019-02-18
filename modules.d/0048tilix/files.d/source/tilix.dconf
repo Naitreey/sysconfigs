@@ -17,24 +17,8 @@ background-transparency-percent=0
 dim-transparency-percent=0
 custom-hyperlinks=['^([a-zA-Z0-9\\-\\_\\/\\.]+)\\/([a-zA-Z0-9\\-\\_\\.]+)$,gvim $0,false']
 
-[keybindings]
-win-switch-to-next-session='<Primary><Alt>Page_Down'
-terminal-find='<Primary><Shift>f'
-session-resize-terminal-left='<Primary><Shift>h'
-session-switch-to-terminal-down='<Primary><Alt>j'
-win-switch-to-previous-session='<Primary><Alt>Page_Up'
-session-resize-terminal-up='<Primary><Shift>k'
-session-resize-terminal-down='<Primary><Shift>j'
-app-new-session='<Primary><Alt>t'
-session-switch-to-terminal-right='<Primary><Alt>l'
-terminal-find-next='<Primary>slash'
-session-switch-to-terminal-up='<Primary><Alt>k'
-session-resize-terminal-right='<Primary><Shift>l'
-app-new-window='<Primary><Alt>n'
-terminal-find-previous='<Primary>question'
-session-switch-to-terminal-left='<Primary><Alt>h'
-
 [/]
+quake-specific-monitor=0
 recent-session-files=['/tmp/f.json']
 tab-position='top'
 copy-on-select=false
@@ -47,3 +31,20 @@ enable-wide-handle=false
 paste-strip-first-char=false
 prompt-on-new-session=false
 window-style='disable-csd-hide-toolbar'
+
+[keybindings]
+win-switch-to-next-session='<Primary><Alt>Down'
+terminal-find='<Primary><Shift>f'
+session-resize-terminal-left='<Primary><Shift>h'
+session-switch-to-terminal-down='<Primary><Alt>j'
+win-switch-to-previous-session='<Primary><Alt>Up'
+session-resize-terminal-up='<Primary><Shift>k'
+session-resize-terminal-down='<Primary><Shift>j'
+app-new-session='<Primary><Alt>t'
+session-switch-to-terminal-right='<Primary><Alt>l'
+terminal-find-next='<Primary>slash'
+session-switch-to-terminal-up='<Primary><Alt>k'
+session-resize-terminal-right='<Primary><Shift>l'
+app-new-window='<Primary><Alt>n'
+terminal-find-previous='<Primary>question'
+session-switch-to-terminal-left='<Primary><Alt>h'
