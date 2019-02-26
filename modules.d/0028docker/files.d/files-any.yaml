@@ -4,3 +4,5 @@
   asroot: true
 - source: config.json
   target: ~/.docker/config.json
+  # some sensitive info might be saved in it
+  copy: true
