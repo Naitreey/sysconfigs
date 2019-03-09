@@ -10,7 +10,7 @@ set show-all-if-unmodified on
 # do not duplicate characters after the cursor if they consist partially of possbile completion
 set skip-completed-text on
 # display colors when doing completion as `ls` does
-set colored-stats on
+set colored-stats off
 # color tab-completion matched prefix part
 set colored-completion-prefix on
 # fuck off stty key bindings. (stty -a)
