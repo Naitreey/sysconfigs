@@ -2,11 +2,13 @@
 gitpython
 ipython
 mycli
+nose
 # math utils
 numpy
 scipy
 matplotlib
 sympy
+pandas
 # jupyter
 jupyter
 # i3wm
