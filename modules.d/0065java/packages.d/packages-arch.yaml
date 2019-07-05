@@ -1,0 +1,10 @@
+- jre11-openjdk-headless
+- jre11-openjdk
+- jdk11-openjdk
+- openjdk11-doc
+- openjdk11-src
+- jre8-openjdk-headless
+- jre8-openjdk
+- jdk8-openjdk
+- openjdk8-doc
+- openjdk8-src
