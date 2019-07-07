@@ -198,14 +198,16 @@ PATH="$HOME/bin${PATH:+:$PATH}"
 declare -x PYENV_ROOT="$HOME/.pyenv"
 [[ ":${PATH}:" == *:$PYENV_ROOT/bin:* ]] || PATH="$PYENV_ROOT/bin${PATH:+:$PATH}"
 eval "$(pyenv init -)"
+# jenv bin
+declare -x JENV_ROOT="$HOME/.jenv"
+[[ ":${PATH}:" == *:$JENV_ROOT/bin:* ]] || PATH="$JENV_ROOT/bin${PATH:+:$PATH}"
+eval "$(jenv init -)"
 # autojump
 [[ -s /home/naitree/.autojump/etc/profile.d/autojump.sh ]] && source /home/naitree/.autojump/etc/profile.d/autojump.sh
 # thefuck
 eval $(thefuck --alias f)
 # direnv
 eval "$(direnv hook bash)"
-# java home
-declare -x JAVA_HOME=/usr/lib/jvm/default
 
 # do not include `-pedantic`, it warns casting from (void*) to function pointer
 # export this variable to environ, so as to be used in makefile
