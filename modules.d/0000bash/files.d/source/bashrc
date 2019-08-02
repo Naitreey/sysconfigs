@@ -189,11 +189,6 @@ stty -ixon
 PATH="$HOME/bin${PATH:+:$PATH}"
 # add $HOME/.local/bin
 [[ ":${PATH}:" == *:$HOME/.local/bin:* ]] || PATH="$HOME/.local/bin${PATH:+:$PATH}"
-# add $HADOOP_HOME/bin and $HADOOP_HOME/sbin
-[[ -d "$HADOOP_HOME" ]] && {
-    [[ ":${PATH}:" == *:$HADOOP_HOME/bin:* ]] || PATH="${PATH:+$PATH:}$HADOOP_HOME/bin"
-    [[ ":${PATH}:" == *:$HADOOP_HOME/sbin:* ]] || PATH="${PATH:+$PATH:}$HADOOP_HOME/sbin"
-}
 # pyenv bin
 declare -x PYENV_ROOT="$HOME/.pyenv"
 [[ ":${PATH}:" == *:$PYENV_ROOT/bin:* ]] || PATH="$PYENV_ROOT/bin${PATH:+:$PATH}"
