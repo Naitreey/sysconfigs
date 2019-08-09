@@ -1,0 +1,2 @@
+- source: dir_colors
+  target: ~/.dir_colors
