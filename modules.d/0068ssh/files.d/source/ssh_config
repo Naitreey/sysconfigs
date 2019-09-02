@@ -1,0 +1,5 @@
+Host *
+    IPQoS lowdelay throughput
+    ControlMaster auto
+    ControlPath ~/.ssh/sockets/%r@%h-%p
+    ControlPersist 60
