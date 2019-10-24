@@ -3,3 +3,6 @@ Host *
     ControlMaster auto
     ControlPath ~/.ssh/sockets/%r@%h-%p
     ControlPersist 60
+    TCPKeepAlive yes
+    ServerAliveInterval 300
+    ServerAliveCountMax 3
