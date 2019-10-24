@@ -208,6 +208,9 @@ eval "$(direnv hook bash)"
 # export this variable to environ, so as to be used in makefile
 declare -x CDBFLAGS='-ggdb3 -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes'
 
+# minio client autocompletion
+complete -C /usr/bin/mcli mcli
+
 cd() {
     if [ $# -eq 0 ]; then
         builtin cd
