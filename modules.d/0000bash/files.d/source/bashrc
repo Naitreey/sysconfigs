@@ -161,7 +161,7 @@ else
     # keep only the last two components of pathname
     PROMPT_DIRTRIM=2
     # user@host:$PWD:n:(branch)$
-    PS1='\[\e[33;1m\]\u@\h:\w:$(__jobnums)\[\e[30;1m\]$(__git_ps1 "(%s)")\[\e[33;1m\]$ \[\e[0m\]'
+    PS1='\[\e[01;32m\]\u@\h\[\e[00m\]:\[\e[01;34m\]\w\[\e[00m\]:\[\e[01;34m\]\[\e[0m\]$(__jobnums)\[\e[30;1m\]$(__git_ps1 "(%s)")\[\e[33;1m\]$ \[\e[0m\]'
 fi
 
 # more delicate info in debug prompt
