@@ -2,60 +2,221 @@
 vim:ft=xml
 -->
 <dict>
-    <key>^_</key>
-    <string>undo:</string>
-    <!-- C-@, but needs to be "2" -->
-    <key>^2</key>
-    <string>setMark:</string>
-    <key>^w</key>
-    <string>deleteToMark:</string>
-    <key>~&#x7F;</key>
-    <string>deleteWordBackward:</string>
-    <key>~d</key>
-    <string>deleteWordForward:</string>
-    <key>^u</key>
-    <string>deleteToBeginningOfLine:</string>
-    <key>~f</key>
-    <string>moveWordForward:</string>
-    <key>~b</key>
-    <string>moveWordBackward:</string>
-    <key>~&lt;</key>
-    <string>moveToBeginningOfDocument:</string>
-    <key>~&gt;</key>
-    <string>moveToEndOfDocument:</string>
-    <key>~{</key>
-    <string>moveToBeginningOfParagraph:</string>
-    <key>~}</key>
-    <string>moveToEndOfParagraph:</string>
-    <key>~v</key>
-    <string>pageUp:</string>
-    <key>^v</key>
-    <string>pageDown:</string>
-    <key>~c</key>
-    <array>
-        <string>capitalizeWord:</string>
-        <string>moveForward:</string>
-        <string>moveForward:</string>
-    </array>
-    <key>~l</key>
-    <array>
-        <string>lowercaseWord:</string>
-        <string>moveForward:</string>
-        <string>moveForward:</string>
-    </array>
-    <key>~u</key>
+    <key>^y</key>
+    <string>yankAndSelect:</string>
+
+    <key>~U</key>
     <array>
         <string>uppercaseWord:</string>
-        <string>moveForward:</string>
-        <string>moveForward:</string>
+        <string>moveWordForward:</string>
+        <string>moveWordBackward:</string>
     </array>
+
+    <key>~L</key>
+    <array>
+        <string>lowercaseWord:</string>
+        <string>moveWordForward:</string>
+        <string>moveWordBackward:</string>
+    </array>
+
+    <key>~C</key>
+    <array>
+        <string>capitalizeWord:</string>
+        <string>moveWordForward:</string>
+        <string>moveWordBackward:</string>
+    </array>
+
+    <key>^_</key>
+    <string>undo:</string>
+
+    <key>~1</key>
+    <string>setMark:</string>
+
+    <key>~2</key>
+    <array>
+        <string>swapWithMark:</string>
+        <string>centerSelectionInVisibleArea:</string>
+    </array>
+
+    <key>~&#x7F;</key>
+    <string>deleteWordBackward:</string>
+
+    <key>^w</key>
+    <string>deleteWordBackward:</string>
+
+    <key>~d</key>
+    <string>deleteWordForward:</string>
+
+    <key>^u</key>
+    <string>deleteToBeginningOfLine:</string>
+
+    <key>~f</key>
+    <string>moveWordForward:</string>
+
+    <key>~b</key>
+    <string>moveWordBackward:</string>
+
+    <key>~&lt;</key>
+    <string>moveToBeginningOfDocument:</string>
+
+    <key>~&gt;</key>
+    <string>moveToEndOfDocument:</string>
+
+    <key>~{</key>
+    <string>moveToBeginningOfParagraph:</string>
+
+    <key>~}</key>
+    <string>moveToEndOfParagraph:</string>
+
+    <key>~o</key>
+    <array>
+        <string>setMark:</string>
+        <string>moveToEndOfParagraph:</string>
+        <string>insertNewline:</string>
+        <string>swapWithMark:</string>
+    </array>
+
+    <key>~O</key>
+    <array>
+        <string>setMark:</string>
+        <string>moveToBeginningOfParagraph:</string>
+        <string>moveLeft:</string>
+        <string>insertNewline:</string>
+        <string>swapWithMark:</string>
+        <string>moveRight:</string>
+    </array>
+
+    <key>~v</key>
+    <string>pageUp:</string>
+
+    <key>^v</key>
+    <string>pageDown:</string>
+
     <key>~t</key>
     <string>transposeWords:</string>
+
     <key>^x</key>
     <dict>
         <key>^x</key>
         <string>swapWithMark:</string>
         <key>^m</key>
         <string>selectToMark:</string>
+    </dict>
+
+    <!-- surrounding selected text with delimiters -->
+    <key>^@s</key>
+    <dict>
+        <!-- with space -->
+        <key>(</key>
+        <array>
+            <string>delete:</string>
+            <string>insertText:</string>
+            <string>( </string>
+            <string>yank:</string>
+            <string>insertText:</string>
+            <string> )</string>
+        </array>
+
+        <key>[</key>
+        <array>
+            <string>delete:</string>
+            <string>insertText:</string>
+            <string>[ </string>
+            <string>yank:</string>
+            <string>insertText:</string>
+            <string> ]</string>
+        </array>
+
+        <key>{</key>
+        <array>
+            <string>delete:</string>
+            <string>insertText:</string>
+            <string>{ </string>
+            <string>yank:</string>
+            <string>insertText:</string>
+            <string> }</string>
+        </array>
+
+        <key>&lt;</key>
+        <array>
+            <string>delete:</string>
+            <string>insertText:</string>
+            <string>&lt; </string>
+            <string>yank:</string>
+            <string>insertText:</string>
+            <string> &gt;</string>
+        </array>
+
+        <!-- without space -->
+        <key>)</key>
+        <array>
+            <string>delete:</string>
+            <string>insertText:</string>
+            <string>(</string>
+            <string>yank:</string>
+            <string>insertText:</string>
+            <string>)</string>
+        </array>
+
+        <key>]</key>
+        <array>
+            <string>delete:</string>
+            <string>insertText:</string>
+            <string>[</string>
+            <string>yank:</string>
+            <string>insertText:</string>
+            <string>]</string>
+        </array>
+
+        <key>}</key>
+        <array>
+            <string>delete:</string>
+            <string>insertText:</string>
+            <string>{</string>
+            <string>yank:</string>
+            <string>insertText:</string>
+            <string>}</string>
+        </array>
+
+        <key>&gt;</key>
+        <array>
+            <string>delete:</string>
+            <string>insertText:</string>
+            <string>&lt;</string>
+            <string>yank:</string>
+            <string>insertText:</string>
+            <string>&gt;</string>
+        </array>
+
+        <!-- quotes -->
+        <key>'</key>
+        <array>
+            <string>delete:</string>
+            <string>insertText:</string>
+            <string>'</string>
+            <string>yank:</string>
+            <string>insertText:</string>
+            <string>'</string>
+        </array>
+
+        <key>"</key>
+        <array>
+            <string>delete:</string>
+            <string>insertText:</string>
+            <string>"</string>
+            <string>yank:</string>
+            <string>insertText:</string>
+            <string>"</string>
+        </array>
+
+        <key>`</key>
+        <array>
+            <string>delete:</string>
+            <string>insertText:</string>
+            <string>`</string>
+            <string>yank:</string>
+            <string>insertText:</string>
+            <string>`</string>
+        </array>
     </dict>
 </dict>
