@@ -29,15 +29,6 @@ vim:ft=xml
     <key>^_</key>
     <string>undo:</string>
 
-    <key>~1</key>
-    <string>setMark:</string>
-
-    <key>~2</key>
-    <array>
-        <string>swapWithMark:</string>
-        <string>centerSelectionInVisibleArea:</string>
-    </array>
-
     <key>~&#x7F;</key>
     <string>deleteWordBackward:</string>
 
